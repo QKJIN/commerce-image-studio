@@ -1,5 +1,6 @@
 import { observer } from "mobx-react-lite";
 import { useEffect, useRef, useState } from "react";
+import dynamic from "next/dynamic";
 import {
   AlertTriangle,
   CheckCircle2,
@@ -7,9 +8,11 @@ import {
   Eye,
   FolderPlus,
   LoaderCircle,
+  Pencil,
   Plus,
   RefreshCw,
   Trash2,
+  Undo2,
 } from "lucide-react";
 import style from "./LeftContent.module.scss";
 import { ImageInput } from "@/components/ImageInput";
@@ -28,6 +31,8 @@ import { createImageList } from "@/engines/transform";
 import { ERROR_ANIMATED_UNSUPPORTED } from "@/engines/animation";
 import { CompressionRate } from "@/components/CompressionRate";
 
+const ImageEditor = dynamic(() => import("./ImageEditor"), { ssr: false });
+
 function isHeif(item: ImageItem) {
   const extension = item.name.split(".").pop()?.toLowerCase();
   return ["image/heic", "image/heif"].includes(item.blob.type.toLowerCase()) ||
@@ -44,12 +49,14 @@ function IconButton({ label, disabled, danger = false, onClick, children }: {
   return <button type="button" className={danger ? style.dangerButton : style.iconButton} aria-label={label} title={label} disabled={disabled} onClick={onClick}>{children}</button>;
 }
 
-const ResultItem = observer(({ item, disabled, onPreviewUnavailable }: { item: ImageItem; disabled: boolean; onPreviewUnavailable: () => void }) => {
-  const { locale } = useAppLocale();
+const ResultItem = observer(({ item, disabled, onPreviewUnavailable, onEdit }: { item: ImageItem; disabled: boolean; onPreviewUnavailable: () => void; onEdit: () => void }) => {
+  const { lang, locale } = useAppLocale();
   const completed = Boolean(item.preview && item.compress);
   const hasError = item.status === "error";
   const outputSize = item.compress?.blob.size;
   const reduced = outputSize !== undefined && item.blob.size > outputSize;
+  const editable = ["image/jpeg", "image/png", "image/webp", "image/avif"].includes(item.blob.type);
+  const zh = lang === "zh-CN";
 
   const compare = () => {
     if (!item.compress || homeState.isCropMode()) return;
@@ -89,6 +96,8 @@ const ResultItem = observer(({ item, disabled, onPreviewUnavailable }: { item: I
         <CompressionRate originSize={item.blob.size} outputSize={outputSize} />
       </div>
       <div className={style.itemActions}>
+        {editable && <IconButton label={zh ? "编辑图片" : "Edit image"} disabled={disabled} onClick={onEdit}><Pencil size={18} /></IconButton>}
+        {item.originalBlob && <IconButton label={zh ? "恢复原图" : "Restore original"} disabled={disabled} onClick={() => homeState.applyEdit(item.key, null)}><Undo2 size={18} /></IconButton>}
         <a className={`${style.iconButton} ${disabled || !item.compress ? style.disabledLink : ""}`} aria-label={locale.listAction.downloadOne ?? "Download"} title={locale.listAction.downloadOne} aria-disabled={disabled || !item.compress} href={!disabled ? item.compress?.src : undefined} download={item.compress ? getOutputFileName(item, homeState.option) : undefined}><Download size={18} /></a>
         <IconButton label={locale.listAction.removeOne ?? "Remove"} danger disabled={disabled} onClick={() => homeState.remove(item.key)}><Trash2 size={18} /></IconButton>
       </div>
@@ -129,6 +138,7 @@ export const LeftContent = observer(() => {
   const progressRef = useRef<HTMLElement>(null);
   const [toast, setToast] = useState<string | null>(null);
   const [visibleCount, setVisibleCount] = useState(32);
+  const [editorKey, setEditorKey] = useState<number | null>(null);
   const totalItems = homeState.list.size;
 
   useEffect(() => {
@@ -207,9 +217,10 @@ export const LeftContent = observer(() => {
         </div>
         <ImageInput ref={fileRef} />
       </div>
-      <div className={style.list}>{takeItems(homeState.list.values(), visibleCount).map((item) => <ResultItem key={item.key} item={item} disabled={disabled} onPreviewUnavailable={() => setToast(locale.heif.previewUnavailable ?? "") } />)}</div>
+      <div className={style.list}>{takeItems(homeState.list.values(), visibleCount).map((item) => <ResultItem key={item.key} item={item} disabled={disabled} onPreviewUnavailable={() => setToast(locale.heif.previewUnavailable ?? "") } onEdit={() => setEditorKey(item.key)} />)}</div>
       <footer ref={progressRef} className={style.progress}><ProgressHint /></footer>
       {toast && <div className={style.toast} role="status"><AlertTriangle size={17} /><span>{toast}</span></div>}
+      {editorKey !== null && homeState.list.get(editorKey) && <ImageEditor item={homeState.list.get(editorKey)!} onClose={() => setEditorKey(null)} onApply={(blob) => { homeState.applyEdit(editorKey, blob); setEditorKey(null); }} />}
     </div>
   );
 });

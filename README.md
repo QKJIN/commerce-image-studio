@@ -8,6 +8,8 @@
 
 图片在浏览器本地处理，可批量加入、检查和下载。预设不是任何平台的官方规范；上传前仍需核对平台要求及结果画质。透明图应用白底主图方案后会变成白底 JPG。小图可能被放大，放大不会增加原有细节。
 
+加入图片后可点每张图片旁的编辑按钮，旋转、拖选裁剪、调亮或去背景；保存后会按当前方案重新生成结果，也可撤销未保存的步骤或恢复最初上传的原图。去背景会自动收紧多余留白。去背景所需文件仅在使用该功能时由浏览器下载，首次约 55 MB；图片本身不会上传到服务器。复杂边缘和透明商品仍需人工检查。
+
 ## 本地运行
 
 需要 Node.js 22 和 npm 10。
@@ -44,3 +46,5 @@ docker stats --no-stream commerce-image-studio
 ## 来源与许可
 
 本项目以 Pic Smaller 的网页版为基础。原项目版权与 MIT 许可见 [LICENSE](LICENSE)。桌面版并不包含在本项目中。
+
+去背景模型与处理流程参考 [browser-remove-background](https://github.com/chenjindu/browser-remove-background)，其模型及代码采用 Apache 2.0 许可，许可文本见 [licenses/browser-remove-background.LICENSE](licenses/browser-remove-background.LICENSE)。模型在构建时从固定版本下载并验证内容；约 44 MB 的模型文件和约 11 MB 的运行文件会随站点静态资源提供，建议经 CDN 缓存，避免反复占用 VPS 带宽。浏览器运行库为 [ONNX Runtime Web](https://github.com/microsoft/onnxruntime)。

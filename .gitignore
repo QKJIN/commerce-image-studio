@@ -16,6 +16,8 @@
 # production
 /build
 /public/codecs/
+/public/models/
+/public/ort/
 
 # misc
 .DS_Store

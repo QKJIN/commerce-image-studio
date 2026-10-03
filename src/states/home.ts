@@ -1,5 +1,5 @@
 import { CompressOption, ProcessOutput } from "@/engines/ImageBase";
-import { createCompressTask } from "@/engines/transform";
+import { createCompressTask, reprocessImage } from "@/engines/transform";
 import { makeAutoObservable, reaction, toJS } from "mobx";
 import { DefaultCompressOption, normalizeCompressOption } from "@/options";
 
@@ -26,6 +26,8 @@ export type ImageItem = {
   status: "pending" | "processing" | "done" | "error";
   processError?: string;
   preservedOriginal?: boolean;
+  originalBlob?: Blob;
+  originalName?: string;
 };
 
 function revokeItemUrls(item?: ImageItem) {
@@ -127,6 +129,43 @@ export class HomeState {
     }
     revokeItemUrls(item);
     this.list.delete(key);
+  }
+
+  applyEdit(key: number, edited: Blob | null) {
+    const item = this.list.get(key);
+    if (!item || this.hasTaskRunning()) return;
+    if (edited === null && !item.originalBlob) return;
+
+    if (edited && !item.originalBlob) {
+      item.originalBlob = item.blob;
+      item.originalName = item.name;
+    }
+    const nextBlob = edited ?? item.originalBlob!;
+    const originalName = item.originalName ?? item.name;
+    const nextName = edited ? `${originalName.replace(/\.[^.]+$/, "")}-edited.png` : originalName;
+
+    this.originSize += nextBlob.size - item.blob.size;
+    if (item.preview) this.completedPreviewCount--;
+    if (item.compress) {
+      this.completedCompressCount--;
+      this.outputSize -= item.compress.blob.size;
+    }
+    revokeItemUrls(item);
+    item.blob = nextBlob;
+    item.name = nextName;
+    item.src = URL.createObjectURL(nextBlob);
+    item.width = 0;
+    item.height = 0;
+    item.preview = undefined;
+    item.compress = undefined;
+    item.status = "processing";
+    item.processError = undefined;
+    item.preservedOriginal = false;
+    if (!edited) {
+      item.originalBlob = undefined;
+      item.originalName = undefined;
+    }
+    reprocessImage(item);
   }
 
   reCompress() {

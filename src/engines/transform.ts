@@ -114,6 +114,12 @@ function createPreviewTask(item: ImageItem, option: CompressOption) {
   enqueueDispatch(() => workerP?.postMessage(createMessageData(item, option)));
 }
 
+export function reprocessImage(item: ImageItem) {
+  const option = toJS(homeState.option);
+  createPreviewTask(item, option);
+  createCompressTask(item);
+}
+
 /**
  * Handle image files
  * @param files
