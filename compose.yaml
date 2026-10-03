@@ -1,0 +1,23 @@
+services:
+  commerce-image-studio:
+    image: commerce-image-studio:latest
+    container_name: commerce-image-studio
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${COMMERCE_PORT:-3100}:3000"
+    cpus: 0.50
+    mem_limit: 384m
+    memswap_limit: 384m
+    pids_limit: 64
+    read_only: true
+    tmpfs:
+      - /tmp:rw,noexec,nosuid,size=32m
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    logging:
+      driver: json-file
+      options:
+        max-size: "5m"
+        max-file: "2"
