@@ -7,7 +7,7 @@ import {
   type SupportedLocale,
 } from "./locale-config";
 
-export const metadataBase = new URL(siteUrl);
+export const metadataBase = siteUrl ? new URL(siteUrl) : undefined;
 
 export const languageAlternates = Object.fromEntries(
   supportedLocales.map((locale) => [locale, getLocalePath(locale)]),
@@ -21,23 +21,24 @@ export function createLocaleMetadata(
     metadataBase,
     title: localeData.siteTitle,
     description: localeData.siteDescription,
-    alternates: {
+    alternates: siteUrl ? {
       canonical: getLocalePath(locale),
       languages: {
         ...languageAlternates,
-        "x-default": "/en-US/",
+        "x-default": "/zh-CN/",
       },
-    },
+    } : undefined,
+    robots: siteUrl ? undefined : { index: false, follow: false },
     openGraph: {
       type: "website",
-      url: getLocalePath(locale),
+      url: siteUrl ? getLocalePath(locale) : undefined,
       title: localeData.siteTitle,
       description: localeData.siteDescription,
-      siteName: "PicSmaller",
+      siteName: locale === "zh-CN" ? "商图工坊" : "Commerce Image Studio",
       locale: locale.replace("-", "_"),
     },
     icons: {
-      icon: "/logo.png",
+      icon: "/icon.svg",
     },
     other: {
       google: "notranslate",

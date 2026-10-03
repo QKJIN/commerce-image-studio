@@ -1,5 +1,5 @@
 import { Mimes } from "@/mimes";
-import { ImageBase, ProcessOutput } from "./ImageBase";
+import { ImageBase, ProcessOutput, drawSquareProductImage } from "./ImageBase";
 import { optimize } from "svgo/lib/svgo";
 import { applySvgDimension } from "./svgParse";
 import { AvifImage } from "./AvifImage";
@@ -36,7 +36,9 @@ export class SvgImage extends ImageBase {
       }
 
       const bitmap = await createImageBitmap(optimizedBlob);
-      if (crop) {
+      if (this.option.resize.method === "squarePad") {
+        drawSquareProductImage(context, bitmap, dimension.width, this.option.format.transparentFill);
+      } else if (crop) {
         context.drawImage(
           bitmap,
           dimension.x,

@@ -55,8 +55,8 @@ function persistOption(option: CompressOption) {
 
 export class HomeState {
   public list: Map<number, ImageItem> = new Map();
-  public option: CompressOption = loadPersistedOption();
-  public tempOption: CompressOption = loadPersistedOption();
+  public option: CompressOption = normalizeCompressOption(undefined);
+  public tempOption: CompressOption = normalizeCompressOption(undefined);
   public compareId: number | null = null;
   public showOption: boolean = false;
   public completedCompressCount: number = 0;
@@ -73,6 +73,12 @@ export class HomeState {
       () => toJS(this.tempOption),
       (opt) => persistOption(opt),
     );
+  }
+
+  restorePersistedOption() {
+    const option = loadPersistedOption();
+    this.option = structuredClone(option);
+    this.tempOption = structuredClone(option);
   }
 
   /**
@@ -93,7 +99,8 @@ export class HomeState {
         resize.cropWidthSize &&
         resize.cropHeightSize &&
         resize.cropWidthSize > 0 &&
-        resize.cropHeightSize > 0)
+        resize.cropHeightSize > 0) ||
+      resize.method === "squarePad"
     );
   }
 

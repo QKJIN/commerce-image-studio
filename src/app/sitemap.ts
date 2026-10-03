@@ -7,17 +7,18 @@ import {
 
 export const dynamic = "force-static";
 
-const languages = Object.fromEntries(
+const languages = siteUrl ? Object.fromEntries(
   [
     ...supportedLocales.map((locale) => [
       locale,
       `${siteUrl}${getLocalePath(locale)}`,
     ]),
-    ["x-default", `${siteUrl}/en-US/`],
+    ["x-default", `${siteUrl}/zh-CN/`],
   ],
-);
+) : {};
 
 export default function sitemap(): MetadataRoute.Sitemap {
+  if (!siteUrl) return [];
   return supportedLocales.map((locale) => ({
     url: `${siteUrl}${getLocalePath(locale)}`,
     changeFrequency: "monthly",

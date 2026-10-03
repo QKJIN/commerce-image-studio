@@ -15,6 +15,7 @@ import style from "./LeftContent.module.scss";
 import { ImageInput } from "@/components/ImageInput";
 import { ProgressHint } from "@/components/ProgressHint";
 import { gstate } from "@/global";
+import { useAppLocale } from "@/locale-context";
 import { homeState, type ImageItem } from "@/states/home";
 import {
   createDownload,
@@ -44,6 +45,7 @@ function IconButton({ label, disabled, danger = false, onClick, children }: {
 }
 
 const ResultItem = observer(({ item, disabled, onPreviewUnavailable }: { item: ImageItem; disabled: boolean; onPreviewUnavailable: () => void }) => {
+  const { locale } = useAppLocale();
   const completed = Boolean(item.preview && item.compress);
   const hasError = item.status === "error";
   const outputSize = item.compress?.blob.size;
@@ -69,8 +71,8 @@ const ResultItem = observer(({ item, disabled, onPreviewUnavailable }: { item: I
 
   return (
     <article className={style.resultItem}>
-      <button type="button" className={style.preview} onClick={compare} disabled={!item.compress || Boolean(homeState.isCropMode())} aria-label={gstate.locale?.previewHelp}>
-        {item.preview ? <img src={item.preview.src} alt="" /> : <span />}
+      <button type="button" className={style.preview} onClick={compare} disabled={!item.compress || Boolean(homeState.isCropMode())} aria-label={locale.previewHelp}>
+        {item.compress || item.preview ? <img src={(item.compress ?? item.preview)!.src} alt="" /> : <span />}
         {item.compress && !homeState.isCropMode() && <i><Eye size={18} /></i>}
       </button>
       <div className={style.fileInfo}>
@@ -78,21 +80,21 @@ const ResultItem = observer(({ item, disabled, onPreviewUnavailable }: { item: I
         <div className={style.fileMeta}><span>{item.width || "-"} x {item.height || "-"}</span><span>{formatSize(item.blob.size)}</span></div>
       </div>
       <div className={style.outputInfo}>
-        <small>{gstate.locale?.columnTitle.newSize}</small>
+        <small>{locale.columnTitle.newSize}</small>
         <strong className={reduced ? style.success : style.warning}>{outputSize === undefined ? "-" : formatSize(outputSize)}</strong>
         <span>{item.compress ? `${item.compress.width} x ${item.compress.height}` : "-"}</span>
       </div>
       <div className={style.rate}>
-        <small>{gstate.locale?.columnTitle.decrease}</small>
+        <small>{locale.columnTitle.decrease}</small>
         <CompressionRate originSize={item.blob.size} outputSize={outputSize} />
       </div>
       <div className={style.itemActions}>
-        <IconButton label={gstate.locale?.listAction.downloadOne ?? "Download"} disabled={disabled || !item.compress} onClick={() => { if (item.compress?.blob) createDownload(getOutputFileName(item, homeState.option), item.compress.blob); }}><Download size={18} /></IconButton>
-        <IconButton label={gstate.locale?.listAction.removeOne ?? "Remove"} danger disabled={disabled} onClick={() => homeState.remove(item.key)}><Trash2 size={18} /></IconButton>
+        <a className={`${style.iconButton} ${disabled || !item.compress ? style.disabledLink : ""}`} aria-label={locale.listAction.downloadOne ?? "Download"} title={locale.listAction.downloadOne} aria-disabled={disabled || !item.compress} href={!disabled ? item.compress?.src : undefined} download={item.compress ? getOutputFileName(item, homeState.option) : undefined}><Download size={18} /></a>
+        <IconButton label={locale.listAction.removeOne ?? "Remove"} danger disabled={disabled} onClick={() => homeState.remove(item.key)}><Trash2 size={18} /></IconButton>
       </div>
       {item.processError && (() => {
         const errorText = item.processError === ERROR_ANIMATED_UNSUPPORTED
-          ? gstate.locale?.errors.animatedUnsupported ?? item.processError
+          ? locale.errors.animatedUnsupported ?? item.processError
           : item.processError;
         return (
           <div className={style.errorTooltip} title={errorText}>
@@ -104,7 +106,7 @@ const ResultItem = observer(({ item, disabled, onPreviewUnavailable }: { item: I
       {item.preservedOriginal && (
         <div className={style.noticeTooltip}>
           <AlertTriangle size={14} />
-          <span>{gstate.locale?.heif.originalPreserved}</span>
+          <span>{locale.heif.originalPreserved}</span>
         </div>
       )}
     </article>
@@ -121,6 +123,7 @@ function takeItems(items: IterableIterator<ImageItem>, limit: number) {
 }
 
 export const LeftContent = observer(() => {
+  const { locale } = useAppLocale();
   const disabled = homeState.hasTaskRunning();
   const fileRef = useRef<HTMLInputElement>(null);
   const progressRef = useRef<HTMLElement>(null);
@@ -167,7 +170,7 @@ export const LeftContent = observer(() => {
         names.add(uniqueName);
         if (info.compress?.blob) zip.file(uniqueName, info.compress.blob);
       }
-      createDownload("picsmaller.zip", await zip.generateAsync({ type: "blob", compression: "DEFLATE", compressionOptions: { level: 6 } }));
+      createDownload("commerce-product-images.zip", await zip.generateAsync({ type: "blob", compression: "DEFLATE", compressionOptions: { level: 6 } }));
     } finally {
       gstate.loading = false;
     }
@@ -177,7 +180,7 @@ export const LeftContent = observer(() => {
     <div className={style.content}>
       <div className={style.toolbar}>
         <div>
-          <button type="button" className="button buttonPrimary" disabled={disabled} onClick={() => fileRef.current?.click()}><Plus size={18} />{gstate.locale?.listAction.batchAppend}</button>
+          <button type="button" className="button buttonPrimary" disabled={disabled} onClick={() => fileRef.current?.click()}><Plus size={18} />{locale.listAction.batchAppend}</button>
           {typeof window.showDirectoryPicker === "function" && (
             <button
               type="button"
@@ -193,18 +196,18 @@ export const LeftContent = observer(() => {
               }}
             >
               <FolderPlus size={18} />
-              {gstate.locale?.listAction.addFolder}
+              {locale.listAction.addFolder}
             </button>
           )}
         </div>
         <div>
-          <IconButton label={gstate.locale?.listAction.reCompress ?? "Recompress"} disabled={disabled} onClick={() => homeState.reCompress()}><RefreshCw size={18} /></IconButton>
-          <IconButton label={gstate.locale?.listAction.clear ?? "Clear"} danger disabled={disabled} onClick={() => homeState.clear()}><Trash2 size={18} /></IconButton>
-          <button type="button" className="button buttonAccent" disabled={disabled} onClick={downloadAll}><Download size={18} />{gstate.locale?.listAction.downloadAll}</button>
+          <IconButton label={locale.listAction.reCompress ?? "Recompress"} disabled={disabled} onClick={() => homeState.reCompress()}><RefreshCw size={18} /></IconButton>
+          <IconButton label={locale.listAction.clear ?? "Clear"} danger disabled={disabled} onClick={() => homeState.clear()}><Trash2 size={18} /></IconButton>
+          <button type="button" className="button buttonAccent" disabled={disabled} onClick={downloadAll}><Download size={18} />{locale.listAction.downloadAll}</button>
         </div>
         <ImageInput ref={fileRef} />
       </div>
-      <div className={style.list}>{takeItems(homeState.list.values(), visibleCount).map((item) => <ResultItem key={item.key} item={item} disabled={disabled} onPreviewUnavailable={() => setToast(gstate.locale?.heif.previewUnavailable ?? "") } />)}</div>
+      <div className={style.list}>{takeItems(homeState.list.values(), visibleCount).map((item) => <ResultItem key={item.key} item={item} disabled={disabled} onPreviewUnavailable={() => setToast(locale.heif.previewUnavailable ?? "") } />)}</div>
       <footer ref={progressRef} className={style.progress}><ProgressHint /></footer>
       {toast && <div className={style.toast} role="status"><AlertTriangle size={17} /><span>{toast}</span></div>}
     </div>

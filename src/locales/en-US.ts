@@ -1,11 +1,11 @@
 import { LocaleData } from "@/type";
 
 const localeData: LocaleData = {
-  logo: "PicSmaller",
+  logo: "Commerce Image Studio",
   siteTitle:
-    "PicSmaller - Compress JPEG, PNG, WEBP, AVIF, HEIC, SVG and GIF images intelligently",
+    "Commerce Image Studio - Prepare product images in batches",
   siteDescription:
-    "Compress JPEG, PNG, WEBP, AVIF, HEIC, SVG and GIF images securely in your browser. Batch resize, crop, and convert formats — all processed locally.",
+    "Create white square product images and lighter product detail images in batches. Process your images locally in your browser.",
   initial: "Initializing",
   previewHelp:
     "Drag the dividing line to compare the compression effect: the left is the original image, the right is the compressed image",
@@ -17,7 +17,7 @@ const localeData: LocaleData = {
     animatedUnsupported: "Animated AVIF/WebP compression is not supported; the original file was preserved.",
   },
   uploadCard: {
-    title: "Select files here, support dragging files and folders",
+    title: "Add product images, or drag files and folders here",
     subTitle: "Open source batch image compression tool, supports %s format",
     pasteHint: "Tip: You can also paste image with Ctrl+V (Cmd+V), or drag and drop images here",
   },
@@ -36,14 +36,14 @@ const localeData: LocaleData = {
     preview: "Preview",
     size: "Size",
     dimension: "Dimension",
-    decrease: "Decrease",
+    decrease: "Size change",
     action: "Action",
     newSize: "New size",
     newDimension: "New Dimension",
   },
   optionPannel: {
     failTip: "Cannot be smaller, please adjust the parameters and try again.",
-    help: "PicSmaller is a batch image compression application. Modifications to the options will be applied to all images.",
+    help: "Commerce Image Studio applies your settings to every image in the batch.",
     resizeLable: "Resize image",
     jpegLable: "JPEG/WEBP parameters",
     pngLable: "PNG parameters",
@@ -96,9 +96,9 @@ const localeData: LocaleData = {
     description: "Sorry, the page you visited does not exist~",
   },
   progress: {
-    before: "Before compression",
-    after: "After compression",
-    rate: "Decrease ratio",
+    before: "Original",
+    after: "Result",
+    rate: "Size change",
   },
 };
 

@@ -1,12 +1,13 @@
 import { observer } from "mobx-react-lite";
 import style from "./index.module.scss";
-import { gstate } from "@/global";
+import { useAppLocale } from "@/locale-context";
 import { homeState } from "@/states/home";
 import { formatSize } from "@/functions";
 import { useResponse } from "@/media";
 import { CompressionRate } from "@/components/CompressionRate";
 
 export const ProgressHint = observer(() => {
+  const { locale } = useAppLocale();
   const info = homeState.getProgressHintInfo();
   const { isMobile } = useResponse();
 
@@ -19,11 +20,11 @@ export const ProgressHint = observer(() => {
         <span className={style.count}><strong>{info.loadedNum}</strong> / {info.totalNum}</span>
         {!isMobile && (
           <>
-            <span>{gstate.locale?.progress.before}: <b>{formatSize(info.originSize)}</b></span>
-            <span>{gstate.locale?.progress.after}: <b>{formatSize(info.outputSize)}</b></span>
+            <span>{locale.progress.before}: <b>{formatSize(info.originSize)}</b></span>
+            <span>{locale.progress.after}: <b>{formatSize(info.outputSize)}</b></span>
           </>
         )}
-        <span>{gstate.locale?.progress.rate}: <CompressionRate originSize={info.originSize} outputSize={info.outputSize} /></span>
+        <span>{locale.progress.rate}: <CompressionRate originSize={info.originSize} outputSize={info.outputSize} /></span>
       </div>
     </div>
   );

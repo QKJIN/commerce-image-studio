@@ -22,7 +22,7 @@ function resolveLocale(locale: string | null): SupportedLocale {
 
 export default function RootLocaleRedirect() {
   useEffect(() => {
-    const savedLocale = window.localStorage.getItem("Pic-Smaller-Locale");
+    const savedLocale = window.localStorage.getItem("commerce-image-studio-locale");
     const locale = resolveLocale(savedLocale ?? getUserLocale());
     window.location.replace(getLocalePath(locale));
   }, []);

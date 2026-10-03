@@ -46,10 +46,11 @@ export function createDownload(name: string, blob: Blob) {
   const url = URL.createObjectURL(blob);
   anchor.href = url;
   anchor.download = name;
+  document.body.appendChild(anchor);
   anchor.click();
   anchor.remove();
-  // Release the temporary object URL right after the click.
-  setTimeout(() => URL.revokeObjectURL(url), 0);
+  // Give browsers time to resolve the Blob URL after handling the click.
+  setTimeout(() => URL.revokeObjectURL(url), 60_000);
 }
 
 /**

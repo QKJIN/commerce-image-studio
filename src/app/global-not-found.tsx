@@ -8,8 +8,8 @@ export default function GlobalNotFound() {
           <strong>404</strong>
           <h1>Page not found</h1>
           <p>The page you requested does not exist.</p>
-          <a className="button buttonPrimary" href="/en-US/">
-            Back to PicSmaller
+          <a className="button buttonPrimary" href="/zh-CN/">
+            返回商图工坊
           </a>
         </main>
       </body>

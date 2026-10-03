@@ -28,7 +28,8 @@ export interface CompressOption {
       | "setLong"
       | "setCropRatio"
       | "setCropSize"
-      | "presetCrop";
+      | "presetCrop"
+      | "squarePad";
     width?: number;
     height?: number;
     short?: number;
@@ -37,6 +38,7 @@ export interface CompressOption {
     cropHeightRatio?: number;
     cropWidthSize?: number;
     cropHeightSize?: number;
+    squareSize?: number;
     presetCrop?: {
       paperSize: string;
       orientation: "portrait" | "landscape";
@@ -80,6 +82,21 @@ export interface Dimension {
   y: number;
   width: number;
   height: number;
+}
+
+export function drawSquareProductImage(
+  context: OffscreenCanvasRenderingContext2D,
+  image: ImageBitmap,
+  size: number,
+  background: string,
+) {
+  context.fillStyle = background;
+  context.fillRect(0, 0, size, size);
+  const available = size * 0.88;
+  const scale = Math.min(available / image.width, available / image.height);
+  const width = image.width * scale;
+  const height = image.height * scale;
+  context.drawImage(image, (size - width) / 2, (size - height) / 2, width, height);
 }
 
 export const PAPER_SIZES: Record<
@@ -130,6 +147,11 @@ export abstract class ImageBase {
       width: this.info.width,
       height: this.info.height,
     };
+
+    if (method === "squarePad" && this.option.resize.squareSize) {
+      const size = Math.ceil(this.option.resize.squareSize);
+      return { x: 0, y: 0, width: size, height: size };
+    }
 
     if (method === "fitWidth") {
       if (!width) {
@@ -408,7 +430,9 @@ export abstract class ImageBase {
     const image = this.info.bitmap ?? (await createImageBitmap(this.info.blob));
 
     const method = this.option.resize.method;
-    if (method && ["setCropRatio", "setCropSize", "presetCrop"].includes(method)) {
+    if (method === "squarePad" && width === this.option.resize.squareSize && height === this.option.resize.squareSize) {
+      drawSquareProductImage(context, image, width, this.option.format.transparentFill);
+    } else if (method && ["setCropRatio", "setCropSize", "presetCrop"].includes(method)) {
       context?.drawImage(
         image,
         cropX,

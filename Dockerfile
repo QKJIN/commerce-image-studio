@@ -5,6 +5,8 @@ RUN npm ci --no-audit --no-fund
 
 FROM node:22-alpine AS builder
 WORKDIR /app
+ARG SITE_URL
+ENV SITE_URL=${SITE_URL}
 ENV NEXT_TELEMETRY_DISABLED=1
 COPY --from=dependencies /app/node_modules ./node_modules
 COPY . .

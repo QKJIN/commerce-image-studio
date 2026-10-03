@@ -1,140 +1,37 @@
-# Pic Smaller (图小小)
+# 商图工坊 / Commerce Image Studio
 
-[English](README.md) · [简体中文](docs/readme/README.zh-CN.md) · [繁體中文](docs/readme/README.zh-TW.md) · [日本語](docs/readme/README.ja-JP.md) · [한국어](docs/readme/README.ko-KR.md) · [Français](docs/readme/README.fr-FR.md) · [Español](docs/readme/README.es-ES.md) · [فارسی](docs/readme/README.fa-IR.md) · [Türkçe](docs/readme/README.tr-TR.md)
+基于 [Pic Smaller](https://github.com/joye61/pic-smaller) 的开源网页版制作的电商图片工具。首版面向通用电商卖家，提供三个一键方案：
 
-> [!IMPORTANT]
-> ### Pic Smaller Desktop — The Flagship Edition
-> **Uncompromising native power, beyond the browser.**
->
-> Elevate your workflow with the flagship Pic Smaller Desktop. A dedicated native application built for professionals who refuse to settle — it glides through massive files and entire folder libraries, supports 16+ image formats, and delivers superior processing performance. Complete the experience with an advanced suite of AI tools: background removal, watermark removal, and high-fidelity image upscaling.
->
-> [![Explore Pic Smaller Desktop](https://img.shields.io/badge/Explore_Pic_Smaller_Desktop-00876c?style=for-the-badge)](https://desktop.picsmaller.com/)
+- 白底主图：导出 1600 × 1600 JPG，商品居中并留白。
+- 轻量主图：导出 1200 × 1200 JPG，商品居中并留白。
+- 详情页图片：长边调整到 1600 像素，导出 WebP。
 
-Pic Smaller is a free, open-source batch image compressor that runs entirely
-in the browser. Images are processed locally with Web Workers, WebAssembly,
-Canvas, and browser codecs. Files are never uploaded to an application server.
+图片在浏览器本地处理，可批量加入、检查和下载。预设不是任何平台的官方规范；上传前仍需核对平台要求及结果画质。透明图应用白底主图方案后会变成白底 JPG。小图可能被放大，放大不会增加原有细节。
 
-Use the hosted app at [picsmaller.com](https://picsmaller.com/) or
-[www.picsmaller.com](https://www.picsmaller.com/).
+## 本地运行
 
-## Features
-
-- Compress JPEG, PNG, WebP, GIF, SVG, and AVIF images in batches.
-- Decode HEIC and HEIF inputs locally and export them as JPEG, PNG, WebP, or AVIF.
-- Convert formats, resize, crop, and control encoder-specific quality options.
-- Add files by picker, folder picker, drag and drop, or clipboard paste.
-- Compare original and compressed images with an interactive split view.
-- Download individual results or save the complete batch as a ZIP archive.
-- Keep images private: processing stays on the user's device.
-
-## Screenshot
-
-![Pic Smaller compressor workspace](./docs/demo1.png)
-
-The core workspace combines batch input, compression results, output settings,
-and download actions in one view.
-
-## Development
-
-Requirements:
-
-- Node.js 22 LTS or newer
-- npm 10 or newer
+需要 Node.js 22 和 npm 10。
 
 ```bash
-git clone https://github.com/joye61/pic-smaller.git
-cd pic-smaller
 npm ci
 npm run dev
 ```
 
-Useful commands:
+打开 `http://localhost:3000`。运行 `npm test`、`npm run lint` 和 `npm run build` 可检查代码。项目也支持 `npm run build:pages` 静态导出。
+
+## VPS 部署
+
+建议用 HTTPS 对外提供服务。Docker 构建时填入实际站点网址，例如：
 
 ```bash
-npm test            # Run the test suite
-npm run lint        # Run ESLint
-npm run build       # Build the standalone Node.js server
-npm run build:pages # Export the static Cloudflare Pages site to out/
+docker build --build-arg SITE_URL=https://images.example.com -t commerce-image-studio .
+docker run -d --name commerce-image-studio --restart unless-stopped \
+  --read-only --tmpfs /tmp:rw,noexec,nosuid,size=64m --cap-drop ALL \
+  --security-opt no-new-privileges -p 127.0.0.1:3000:3000 commerce-image-studio
 ```
 
-## Deployment
+再用现有反向代理把域名的 HTTPS 流量转发到 `127.0.0.1:3000`。`SITE_URL` 未设置时，页面会明确禁止搜索引擎收录，避免把未配置域名的版本发布出去。静态导出同样在构建时设置 `SITE_URL`。
 
-### Cloudflare Pages
+## 来源与许可
 
-The public site uses Cloudflare Pages with the GitHub repository integration.
-Cloudflare builds and deploys the site automatically with these settings:
-
-| Setting | Value |
-| --- | --- |
-| Production branch | `master` |
-| Preview branch | `develop` |
-| Build command | `npm run build:pages` |
-| Output directory | `out` |
-| Node.js version | `22` |
-
-Pushes to `master` update production. Pushes to `develop` create preview
-deployments. Other branches do not deploy automatically.
-
-The Pages build removes Next.js's generated top-level `404.html`, allowing
-Cloudflare Pages to apply its native single-page application fallback.
-
-### Docker
-
-The Docker image is an alternative for private or self-hosted deployments. It
-uses Next.js standalone output, runs as the unprivileged `node` user, handles
-signals through `tini`, and includes a container health check.
-
-```bash
-docker build --pull -t pic-smaller:latest .
-
-docker run -d \
-  --name pic-smaller \
-  --restart unless-stopped \
-  --read-only \
-  --tmpfs /tmp:rw,noexec,nosuid,size=64m \
-  --cap-drop ALL \
-  --security-opt no-new-privileges \
-  -p 127.0.0.1:3000:3000 \
-  pic-smaller:latest
-```
-
-Open `http://127.0.0.1:3000`. For public access, place the container behind a
-TLS-terminating reverse proxy such as Caddy, nginx, or Traefik. Remove the
-`127.0.0.1:` bind prefix only when direct network exposure is intentional.
-
-### Secrets and configuration
-
-The web application does not require API keys. Never commit credentials,
-Cloudflare tokens, `.env` files, `.dev.vars`, private keys, or local Wrangler
-state. The repository ignore rules exclude these files. If a future feature
-needs secrets, store them in the deployment platform's secret manager and
-provide only documented placeholder names in an `.env.example` file.
-
-## Project Structure
-
-- `src/app/`: Next.js application entry points.
-- `src/components/`: reusable interface components.
-- `src/engines/`: browser codecs, workers, transforms, and compression queue.
-- `src/locales/`: translations.
-- `src/views/`: application views.
-- `public/`: browser codec and WebAssembly assets prepared during builds.
-- `scripts/`: codec preparation and deployment build helpers.
-- `tests/`: Node.js test suite.
-
-## Contributing
-
-1. Create a branch from `develop`.
-2. Run `npm test`, `npm run lint`, and the relevant production build.
-3. Update documentation and screenshots when behavior or the interface changes.
-4. Open a focused pull request with a clear description and verification notes.
-
-## License
-
-Pic Smaller is available under the [MIT License](./LICENSE).
-
-## Acknowledgements
-
-- [Squoosh Kit](https://github.com/bnowak008/squoosh-kit) for AVIF, ImageQuant, and OxiPNG codecs.
-- [heic-to](https://github.com/hoppergee/heic-to) for browser-side HEIC and HEIF decoding.
-- [SVGO](https://github.com/svg/svgo) for SVG optimization.
-- [gifsicle-wasm-browser](https://github.com/renzhezhilu/gifsicle-wasm-browser) for GIF compression.
+本项目以 Pic Smaller 的网页版为基础。原项目版权与 MIT 许可见 [LICENSE](LICENSE)。桌面版并不包含在本项目中。

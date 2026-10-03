@@ -38,6 +38,7 @@
 }
 
 .dangerButton { color: var(--color-destructive); }
+.disabledLink { opacity: .5; pointer-events: none; cursor: not-allowed; }
 
 .list {
   min-height: 0;

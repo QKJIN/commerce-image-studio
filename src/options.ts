@@ -15,6 +15,7 @@ export const DefaultCompressOption: CompressOption = {
     cropHeightRatio: undefined,
     cropWidthSize: undefined,
     cropHeightSize: undefined,
+    squareSize: undefined,
     presetCrop: {
       paperSize: "a4",
       orientation: "portrait",
@@ -32,7 +33,7 @@ export const DefaultCompressOption: CompressOption = {
 
 type JsonObject = Record<string, unknown>;
 
-const resizeMethods = ["fitWidth", "fitHeight", "setShort", "setLong", "setCropRatio", "setCropSize", "presetCrop"] as const;
+const resizeMethods = ["fitWidth", "fitHeight", "setShort", "setLong", "setCropRatio", "setCropSize", "presetCrop", "squarePad"] as const;
 const paperSizes = ["a3", "a4", "a5", "letter", "legal", "b4", "b5"];
 
 function objectValue(value: unknown): JsonObject {
@@ -84,6 +85,7 @@ export function normalizeCompressOption(value: unknown): CompressOption {
       cropHeightRatio: optionalPositiveNumber(resize.cropHeightRatio),
       cropWidthSize: optionalPositiveNumber(resize.cropWidthSize),
       cropHeightSize: optionalPositiveNumber(resize.cropHeightSize),
+      squareSize: optionalPositiveNumber(resize.squareSize),
       presetCrop: {
         paperSize: typeof presetCrop.paperSize === "string" && paperSizes.includes(presetCrop.paperSize) ? presetCrop.paperSize : "a4",
         orientation: presetCrop.orientation === "landscape" ? "landscape" : "portrait",

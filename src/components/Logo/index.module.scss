@@ -10,16 +10,14 @@
     flex: none;
     border-radius: var(--radius-md);
     overflow: hidden;
-    img {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      display: block;
-      width: 125%;
-      height: 125%;
-      max-width: none;
-      transform: translate(-50%, -50%);
-    }
+    display: grid;
+    place-items: center;
+    background: var(--color-secondary);
+    color: white;
+    font-family: "Noto Serif SC", serif;
+    font-size: 25px;
+    font-weight: 700;
+    > span { transform: translateY(-1px); }
   }
   > span:last-child {
     color: var(--color-primary);

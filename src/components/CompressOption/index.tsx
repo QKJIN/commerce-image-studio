@@ -1,7 +1,7 @@
 import { observer } from "mobx-react-lite";
 import style from "./index.module.scss";
 import { homeState } from "@/states/home";
-import { gstate } from "@/global";
+import { useAppLocale } from "@/locale-context";
 import { getImageMime, Mimes, OutputFormats } from "@/mimes";
 import { MAX_CANVAS_DIMENSION, PAPER_SIZES } from "@/engines/ImageBase";
 import { Select } from "@/components/Select";
@@ -44,8 +44,9 @@ function RangeField({ label, value, min, max, step, disabled, onChange }: RangeF
 }
 
 export const CompressOption = observer(() => {
+  const { lang, locale: localeData } = useAppLocale();
   const disabled = homeState.hasTaskRunning();
-  const locale = gstate.locale?.optionPannel;
+  const locale = localeData.optionPannel;
   const resize = homeState.tempOption.resize;
   const resizeMethod = resize.method;
   const targetFormat = homeState.tempOption.format.target;
@@ -78,6 +79,7 @@ export const CompressOption = observer(() => {
       cropHeightRatio: undefined,
       cropWidthSize: undefined,
       cropHeightSize: undefined,
+      squareSize: undefined,
       presetCrop: method === "presetCrop"
         ? { paperSize: "a4", orientation: "portrait", reference: "width", cropPx: 0, offsetPx: 0 }
         : undefined,
@@ -96,6 +98,7 @@ export const CompressOption = observer(() => {
     { value: "setCropRatio", label: locale?.setCropRatio ?? "" },
     { value: "setCropSize", label: locale?.setCropSize ?? "" },
     { value: "presetCrop", label: locale?.presetCrop ?? "" },
+    { value: "squarePad", label: lang === "zh-CN" ? "白底方形商品图" : "Square product image with padding" },
   ];
 
   let resizeField: React.ReactNode = null;
@@ -119,6 +122,8 @@ export const CompressOption = observer(() => {
       "x",
       <NumberField value={resize.cropHeightSize} min={1} disabled={disabled} placeholder={locale?.chSizePlaceholder} onChange={(value) => { resize.cropHeightSize = value; }} />,
     );
+  } else if (resizeMethod === "squarePad") {
+    resizeField = <label className={style.colorField}><span>{lang === "zh-CN" ? "输出边长（像素）" : "Output side length (pixels)"}</span><NumberField value={resize.squareSize} min={1} disabled={disabled} placeholder="1600" onChange={(value) => { resize.squareSize = value; }} /></label>;
   }
 
   let presetWarning = false;

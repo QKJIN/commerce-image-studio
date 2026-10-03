@@ -3,6 +3,7 @@ import {
   ImageBase,
   ImageInfo,
   ProcessOutput,
+  drawSquareProductImage,
 } from "./ImageBase";
 import { GifImage } from "./GifImage";
 import { CanvasImage } from "./CanvasImage";
@@ -140,7 +141,9 @@ export async function convert(
         outCtx.fillRect(0, 0, dim.width, dim.height);
       }
 
-      if (
+      if (data.option.resize.method === "squarePad") {
+        drawSquareProductImage(outCtx, bitmap, dim.width, data.option.format.transparentFill);
+      } else if (
         data.option.resize.method &&
         ["setCropRatio", "setCropSize", "presetCrop"].includes(
           data.option.resize.method,
@@ -180,8 +183,8 @@ export async function convert(
 
       return {
         key: data.info.key,
-        width: dim.width,
-        height: dim.height,
+        width: data.info.width,
+        height: data.info.height,
         compress: {
           width: dim.width,
           height: dim.height,

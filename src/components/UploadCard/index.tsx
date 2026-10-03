@@ -2,7 +2,7 @@ import style from "./index.module.scss";
 import { useEffect, useRef } from "react";
 import classNames from "classnames";
 import { observer } from "mobx-react-lite";
-import { gstate } from "@/global";
+import { useAppLocale } from "@/locale-context";
 import { ImageInput } from "../ImageInput";
 import { state } from "./state";
 import { createImageList } from "@/engines/transform";
@@ -12,6 +12,7 @@ import { Mimes } from "@/mimes";
 import { Images, LockKeyhole } from "lucide-react";
 
 export const UploadCard = observer(() => {
+  const { locale } = useAppLocale();
   const fileRef = useRef<HTMLInputElement>(null);
   const dragRef = useRef<HTMLButtonElement>(null);
 
@@ -87,10 +88,10 @@ export const UploadCard = observer(() => {
         <div className={style.uploadIcon}>
           <Images aria-hidden="true" />
         </div>
-        <strong>{gstate.locale?.uploadCard.title}</strong>
+        <strong>{locale.uploadCard.title}</strong>
         <p>
           {sprintf(
-            gstate.locale?.uploadCard.subTitle ?? "",
+            locale.uploadCard.subTitle,
             Object.keys(Mimes)
               .map((item) => item.toUpperCase())
               .join("/"),
@@ -98,7 +99,7 @@ export const UploadCard = observer(() => {
         </p>
         <div className={style.pasteHint}>
           <LockKeyhole size={16} aria-hidden="true" />
-          <span>{gstate.locale?.uploadCard.pasteHint}</span>
+          <span>{locale.uploadCard.pasteHint}</span>
         </div>
       </div>
       <ImageInput ref={fileRef} />
@@ -106,7 +107,7 @@ export const UploadCard = observer(() => {
         type="button"
         className={style.mask}
         ref={dragRef}
-        aria-label={gstate.locale?.uploadCard.title}
+        aria-label={locale.uploadCard.title}
         onClick={() => {
           fileRef.current?.click();
         }}

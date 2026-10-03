@@ -6,6 +6,7 @@ import { ImageItem, homeState } from "@/states/home";
 import { observer } from "mobx-react-lite";
 import classNames from "classnames";
 import { gstate } from "@/global";
+import { useAppLocale } from "@/locale-context";
 
 export interface CompareState {
   x: number;
@@ -37,6 +38,7 @@ const CompareImage = memo(function CompareImage({
 });
 
 export const Compare = observer(() => {
+  const { locale } = useAppLocale();
   const infoRef = useRef<Required<ImageItem>>(
     homeState.list.get(homeState.compareId!) as Required<ImageItem>,
   );
@@ -279,7 +281,7 @@ export const Compare = observer(() => {
         <div ref={barRef}><ArrowLeftRight size={20} /></div>
       </div>
       <div className={style.action}>
-        {showHelp && <div className={style.help}>{gstate.locale?.previewHelp}</div>}
+        {showHelp && <div className={style.help}>{locale.previewHelp}</div>}
         <button type="button" aria-label="Comparison help" onClick={() => setShowHelp(!showHelp)}><CircleHelp size={20} /></button>
         <button
           type="button"

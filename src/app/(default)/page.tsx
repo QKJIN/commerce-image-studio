@@ -1,11 +1,11 @@
 import ClientPage from "../ClientPage";
 import RootLocaleRedirect from "../RootLocaleRedirect";
-import enUS from "@/locales/en-US";
+import zhCN from "@/locales/zh-CN";
 
 export default function Page() {
   return (
     <>
-      <ClientPage lang="en-US" locale={enUS} />
+      <ClientPage lang="zh-CN" locale={zhCN} />
       <RootLocaleRedirect />
     </>
   );
