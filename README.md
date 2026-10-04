@@ -27,7 +27,7 @@ npm run dev
 
 ### 用 Coolify 部署
 
-仓库的 GitHub Actions 会先在 GitHub 上检查并构建镜像，推送到 `ghcr.io/qkjin/commerce-image-studio:latest`。请在 Coolify 中选 **Docker Image**，填入这个镜像地址，将 **Ports Exposes** 设为 `3000`，再设置域名。这样构建工作不会占用 VPS 的资源。GitHub 新建的镜像包默认是私有的；需要在 GitHub Packages 中将它设为公开，或者在 Coolify 配置拉取私有镜像的凭据。
+仓库的 GitHub Actions 会先在 GitHub 上检查并构建镜像，推送到 `ghcr.io/qkjin/commerce-image-studio:latest`。请在 Coolify 中选 **Docker Image**，填入这个镜像地址，将 **Ports Exposes** 设为 `3000`，再设置域名。这样构建工作不会占用 VPS 的资源。当前镜像包已公开，Coolify 可直接拉取，无需另配镜像凭据。
 
 在 Coolify 的 **Configuration → Resource Limits** 中把 **Number of CPUs** 设为 `0.5`，**Maximum Memory Limit** 和 **Maximum Swap Limit** 都设为 `384m`，保存后重新部署。Coolify 的 Docker Image 部署不会读取本仓库的 `compose.yaml`，因此这些限制需要在 Coolify 中单独填写。
 
@@ -53,7 +53,7 @@ docker inspect commerce-image-studio --format 'CPU={{.HostConfig.NanoCpus}} Memo
 docker stats --no-stream commerce-image-studio
 ```
 
-现有反向代理把域名的 HTTPS 流量转发到 `127.0.0.1:3100`。如果该端口已被占用，可在运行 `docker compose` 时设置 `COMMERCE_PORT`。`SITE_URL` 未设置时，页面会明确禁止搜索引擎收录，避免把未配置域名的版本发布出去。静态导出同样在构建时设置 `SITE_URL`。
+将反向代理的 HTTPS 流量转发到 `127.0.0.1:3100`。如果该端口已被占用，可在运行 `docker compose` 时设置 `COMMERCE_PORT`。`SITE_URL` 未设置时，页面会明确禁止搜索引擎收录，避免把未配置域名的版本发布出去。静态导出同样在构建时设置 `SITE_URL`。
 
 ## 来源与许可
 
