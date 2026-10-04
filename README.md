@@ -1,50 +1,54 @@
-# 商图工坊 / Commerce Image Studio
+<p align="center"><img src="public/icon.svg" width="96" height="96" alt=""></p>
 
-基于 [Pic Smaller](https://github.com/joye61/pic-smaller) 的开源网页版制作的电商图片工具。首版面向通用电商卖家，提供三个一键方案：
+# Commerce Image Studio / 商图工坊
 
-- 白底主图：导出 1600 × 1600 JPG，商品居中并留白。
-- 轻量主图：导出 1200 × 1200 JPG，商品居中并留白。
-- 详情页图片：长边调整到 1600 像素，导出 WebP。
+English | [简体中文](README.zh-CN.md)
 
-图片在浏览器本地处理，可批量加入、检查和下载。预设不是任何平台的官方规范；上传前仍需核对平台要求及结果画质。透明图应用白底主图方案后会变成白底 JPG。小图可能被放大，放大不会增加原有细节。
+An ecommerce image tool built on the open-source web version of [Pic Smaller](https://github.com/joye61/pic-smaller). The first release targets general online sellers and offers three one-click presets:
 
-加入图片后可点每张图片旁的编辑按钮，旋转、拖选裁剪、调亮或去背景；保存后会按当前方案重新生成结果，也可撤销未保存的步骤或恢复最初上传的原图。去背景会自动收紧多余留白。去背景所需文件仅在使用该功能时由浏览器下载，首次约 55 MB；图片本身不会上传到服务器。复杂边缘和透明商品仍需人工检查。
+- White main image: exports a 1600 × 1600 JPG with the product centered and padded.
+- Light main image: exports a 1200 × 1200 JPG with the product centered and padded.
+- Detail page image: resizes the long edge to 1600 pixels and exports WebP.
 
-## 本地运行
+Images are processed locally in the browser and can be added, reviewed and downloaded in batches. The presets are not official specifications of any platform; check the platform's requirements and the output quality before uploading. Transparent images become white-background JPGs under the white main image preset. Small images may be upscaled, and upscaling does not add detail that was not there.
 
-需要 Node.js 22 和 npm 10。
+After adding images, click the edit button next to an image to rotate, drag-crop, brighten or remove the background. Saving regenerates the result with the current preset. You can undo unsaved steps or restore the originally uploaded image. Background removal automatically trims surplus margins. The files needed for background removal are downloaded by the browser only when the feature is used, about 55 MB the first time; images themselves are never uploaded to the server. Complex edges and transparent products still need a manual check.
+
+## Run locally
+
+Requires Node.js 22 and npm 10.
 
 ```bash
 npm ci
 npm run dev
 ```
 
-打开 `http://localhost:3000`。运行 `npm test`、`npm run lint` 和 `npm run build` 可检查代码。项目也支持 `npm run build:pages` 静态导出。
+Open `http://localhost:3000`. Run `npm test`, `npm run lint` and `npm run build` to check the code. The project also supports a static export with `npm run build:pages`.
 
-## VPS 部署
+## Deploy to a VPS
 
-建议用 HTTPS 对外提供服务。`compose.yaml` 给运行中的容器设了上限：最多使用半个 CPU 核心、384 MB 内存、64 个进程；不使用额外交换空间，临时目录最多 32 MB，容器日志最多保留约 10 MB。超出内存上限时本站可能重启，但不会继续占用其他业务的内存。带宽和反向代理日志不受这些上限控制，需要在反向代理或 CDN 另行限制。
+Serve the site over HTTPS. `compose.yaml` caps the running container at half a CPU core, 384 MB of memory and 64 processes, with no extra swap, at most 32 MB of temporary files and about 10 MB of container logs. If the memory cap is exceeded the site may restart, but it will not keep taking memory from other services. Bandwidth and reverse proxy logs are not covered by these caps; limit them separately in the reverse proxy or CDN.
 
-### 用 Coolify 部署
+### Deploy with Coolify
 
-仓库的 GitHub Actions 会先在 GitHub 上检查并构建镜像，推送到 `ghcr.io/qkjin/commerce-image-studio:latest`。请在 Coolify 中选 **Docker Image**，填入这个镜像地址，将 **Ports Exposes** 设为 `3000`，再设置域名。这样构建工作不会占用 VPS 的资源。当前镜像包已公开，Coolify 可直接拉取，无需另配镜像凭据。
+The repository's GitHub Actions workflow checks and builds the image on GitHub, then pushes it to `ghcr.io/qkjin/commerce-image-studio:latest`. In Coolify, choose **Docker Image**, enter this image address, set **Ports Exposes** to `3000`, and set the domain. The build therefore does not use VPS resources. The image package is public, so Coolify can pull it without registry credentials.
 
-在 Coolify 的 **Configuration → Resource Limits** 中把 **Number of CPUs** 设为 `0.5`，**Maximum Memory Limit** 和 **Maximum Swap Limit** 都设为 `384m`，保存后重新部署。Coolify 的 Docker Image 部署不会读取本仓库的 `compose.yaml`，因此这些限制需要在 Coolify 中单独填写。
+In Coolify, under **Configuration → Resource Limits**, set **Number of CPUs** to `0.5` and both **Maximum Memory Limit** and **Maximum Swap Limit** to `384m`, then save and redeploy. Coolify's Docker Image deployments do not read this repository's `compose.yaml`, so these limits must be entered in Coolify.
 
-正式对外开放前，在 GitHub 仓库 **Settings → Secrets and variables → Actions → Variables** 中创建 `SITE_URL`，值为完整站点网址（例如 `https://images.example.com`），然后在 Actions 中重新运行 **Check and publish image**，并在 Coolify 重新部署。未设置 `SITE_URL` 的构建会阻止搜索引擎收录。Coolify 的域名设置不会替代此构建参数。
+Before opening the site to the public, create a `SITE_URL` variable under the GitHub repository's **Settings → Secrets and variables → Actions → Variables**, with the full site URL as its value (for example `https://images.example.com`). Then re-run **Check and publish image** in Actions and redeploy in Coolify. Builds without `SITE_URL` block search engine indexing. Coolify's domain setting does not replace this build argument.
 
-镜像目前构建为 `linux/amd64`，适用于常见的 x86 VPS；ARM VPS 需改为对应架构后重新构建。部署后请实际打开域名，测试上传、编辑、去背景、下载，并检查容器资源占用。
+The image is currently built for `linux/amd64`, which suits common x86 VPS hosts. For an ARM VPS, change the target architecture and rebuild. After deploying, open the domain and test uploading, editing, background removal and downloading, and check the container's resource usage.
 
-### 不使用 Coolify
+### Without Coolify
 
-**不要在承载其他业务的 VPS 上构建镜像。**构建过程不受运行容器的资源上限保护。请在与 VPS CPU 架构一致的其他机器上构建，填入实际站点网址，并把构建好的镜像传到 VPS：
+**Do not build the image on a VPS that hosts other services.** The build is not protected by the running container's resource caps. Build on another machine with the same CPU architecture as the VPS, pass the real site URL, and transfer the built image to the VPS:
 
 ```bash
 docker build --build-arg SITE_URL=https://images.example.com -t commerce-image-studio .
 docker save commerce-image-studio:latest | gzip > commerce-image-studio.tar.gz
 ```
 
-把 `commerce-image-studio.tar.gz` 和 `compose.yaml` 传到 VPS 的同一目录后，在 VPS 上运行：
+Copy `commerce-image-studio.tar.gz` and `compose.yaml` into the same directory on the VPS, then run on the VPS:
 
 ```bash
 gzip -dc commerce-image-studio.tar.gz | docker load
@@ -53,10 +57,10 @@ docker inspect commerce-image-studio --format 'CPU={{.HostConfig.NanoCpus}} Memo
 docker stats --no-stream commerce-image-studio
 ```
 
-将反向代理的 HTTPS 流量转发到 `127.0.0.1:3100`。如果该端口已被占用，可在运行 `docker compose` 时设置 `COMMERCE_PORT`。`SITE_URL` 未设置时，页面会明确禁止搜索引擎收录，避免把未配置域名的版本发布出去。静态导出同样在构建时设置 `SITE_URL`。
+Forward the reverse proxy's HTTPS traffic to `127.0.0.1:3100`. If that port is taken, set `COMMERCE_PORT` when running `docker compose`. When `SITE_URL` is not set, pages explicitly forbid search engine indexing so that a version without a configured domain is not published. Static exports also take `SITE_URL` at build time.
 
-## 来源与许可
+## Origin and licenses
 
-本项目以 Pic Smaller 的网页版为基础。原项目版权与 MIT 许可见 [LICENSE](LICENSE)，本项目新增的修改同样以 MIT 许可发布。桌面版并不包含在本项目中。项目还包含使用各自许可的第三方文件，详见 [第三方许可说明](THIRD_PARTY_NOTICES.md)；尤其 GIF 处理程序不能简单按 MIT 许可用于闭源项目。
+This project is based on the web version of Pic Smaller. The original project's copyright and MIT license are in [LICENSE](LICENSE); this project's own changes are also released under the MIT license. The Pic Smaller desktop edition is not part of this project. The project also includes third-party files under their own licenses; see the [third-party notices](THIRD_PARTY_NOTICES.md). In particular, the GIF processor cannot simply be used in closed-source projects under the MIT license.
 
-去背景模型与处理流程参考 [browser-remove-background](https://github.com/chenjindu/browser-remove-background)，其模型及代码采用 Apache 2.0 许可，许可文本见 [licenses/browser-remove-background.LICENSE](licenses/browser-remove-background.LICENSE)。模型在构建时从固定版本下载并验证内容；约 44 MB 的模型文件和约 11 MB 的运行文件会随站点静态资源提供，建议经 CDN 缓存，避免反复占用 VPS 带宽。浏览器运行库为 [ONNX Runtime Web](https://github.com/microsoft/onnxruntime)。
+The background-removal model and pipeline are adapted from [browser-remove-background](https://github.com/chenjindu/browser-remove-background), whose model and code are licensed under Apache 2.0; the license text is in [licenses/browser-remove-background.LICENSE](licenses/browser-remove-background.LICENSE). The model is downloaded from a pinned revision at build time and its content is verified. The model file of about 44 MB and runtime files of about 11 MB are served with the site's static assets; caching them through a CDN is recommended to avoid repeatedly using VPS bandwidth. The browser runtime is [ONNX Runtime Web](https://github.com/microsoft/onnxruntime).
