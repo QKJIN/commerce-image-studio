@@ -25,6 +25,18 @@ npm run dev
 
 建议用 HTTPS 对外提供服务。`compose.yaml` 给运行中的容器设了上限：最多使用半个 CPU 核心、384 MB 内存、64 个进程；不使用额外交换空间，临时目录最多 32 MB，容器日志最多保留约 10 MB。超出内存上限时本站可能重启，但不会继续占用其他业务的内存。带宽和反向代理日志不受这些上限控制，需要在反向代理或 CDN 另行限制。
 
+### 用 Coolify 部署
+
+仓库的 GitHub Actions 会先在 GitHub 上检查并构建镜像，推送到 `ghcr.io/qkjin/commerce-image-studio:latest`。请在 Coolify 中选 **Docker Image**，填入这个镜像地址，将 **Ports Exposes** 设为 `3000`，再设置域名。这样构建工作不会占用 VPS 的资源。GitHub 新建的镜像包默认是私有的；需要在 GitHub Packages 中将它设为公开，或者在 Coolify 配置拉取私有镜像的凭据。
+
+在 Coolify 的 **Configuration → Resource Limits** 中把 **Number of CPUs** 设为 `0.5`，**Maximum Memory Limit** 和 **Maximum Swap Limit** 都设为 `384m`，保存后重新部署。Coolify 的 Docker Image 部署不会读取本仓库的 `compose.yaml`，因此这些限制需要在 Coolify 中单独填写。
+
+正式对外开放前，在 GitHub 仓库 **Settings → Secrets and variables → Actions → Variables** 中创建 `SITE_URL`，值为完整站点网址（例如 `https://images.example.com`），然后在 Actions 中重新运行 **Check and publish image**，并在 Coolify 重新部署。未设置 `SITE_URL` 的构建会阻止搜索引擎收录。Coolify 的域名设置不会替代此构建参数。
+
+镜像目前构建为 `linux/amd64`，适用于常见的 x86 VPS；ARM VPS 需改为对应架构后重新构建。部署后请实际打开域名，测试上传、编辑、去背景、下载，并检查容器资源占用。
+
+### 不使用 Coolify
+
 **不要在承载其他业务的 VPS 上构建镜像。**构建过程不受运行容器的资源上限保护。请在与 VPS CPU 架构一致的其他机器上构建，填入实际站点网址，并把构建好的镜像传到 VPS：
 
 ```bash
