@@ -134,7 +134,7 @@ export async function createImageList(files: Array<File>) {
       .join(", ");
     const extra = largeFiles.length > 3 ? ` +${largeFiles.length - 3}` : "";
     console.warn(
-      `[PicSmaller] Detected ${largeFiles.length} large file(s) (${names}${extra}). Processing may be slow or exceed browser memory limits.`,
+      `[Commerce Image Studio] Detected ${largeFiles.length} large file(s) (${names}${extra}). Processing may be slow or exceed browser memory limits.`,
     );
   }
 
