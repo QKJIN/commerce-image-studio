@@ -20,6 +20,8 @@ ENV PORT=3000
 ENV HOSTNAME=0.0.0.0
 RUN apk add --no-cache tini
 COPY --from=builder --chown=node:node /app/.next/standalone ./
+COPY --from=builder --chown=node:node /app/LICENSE /app/THIRD_PARTY_NOTICES.md ./
+COPY --from=builder --chown=node:node /app/licenses ./licenses
 USER node
 EXPOSE 3000
 STOPSIGNAL SIGTERM

@@ -57,6 +57,6 @@ docker stats --no-stream commerce-image-studio
 
 ## 来源与许可
 
-本项目以 Pic Smaller 的网页版为基础。原项目版权与 MIT 许可见 [LICENSE](LICENSE)。桌面版并不包含在本项目中。
+本项目以 Pic Smaller 的网页版为基础。原项目版权与 MIT 许可见 [LICENSE](LICENSE)。桌面版并不包含在本项目中。项目还包含使用各自许可的第三方文件，详见 [第三方许可说明](THIRD_PARTY_NOTICES.md)；尤其 GIF 处理程序不能简单按 MIT 许可用于闭源项目。
 
 去背景模型与处理流程参考 [browser-remove-background](https://github.com/chenjindu/browser-remove-background)，其模型及代码采用 Apache 2.0 许可，许可文本见 [licenses/browser-remove-background.LICENSE](licenses/browser-remove-background.LICENSE)。模型在构建时从固定版本下载并验证内容；约 44 MB 的模型文件和约 11 MB 的运行文件会随站点静态资源提供，建议经 CDN 缓存，避免反复占用 VPS 带宽。浏览器运行库为 [ONNX Runtime Web](https://github.com/microsoft/onnxruntime)。

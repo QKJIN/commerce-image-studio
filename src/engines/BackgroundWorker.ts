@@ -1,3 +1,10 @@
+/**
+ * Background-removal preprocessing/postprocessing adapted from
+ * chenjindu/browser-remove-background (Apache-2.0).
+ * Changed for this application: worker-only WASM execution, cancellation,
+ * and automatic trimming around the extracted subject.
+ * See THIRD_PARTY_NOTICES.md and licenses/browser-remove-background.LICENSE.
+ */
 import * as ort from "onnxruntime-web/wasm";
 
 const size = 1024;

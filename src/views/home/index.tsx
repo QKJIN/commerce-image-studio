@@ -29,6 +29,7 @@ const copy = {
     guide: [["选方案", "白底主图或详情页图片，先选用途。"], ["加图片", "拖入多张商品图，必要时逐张编辑。"], ["检查导出", "看尺寸与画质，再下载结果。"]],
     disclaimer: "预设是通用起点，发布前请核对目标平台的最新图片要求。",
     source: "项目源码",
+    thirdParty: "第三方许可",
     start: "开始处理商品图",
   },
   en: {
@@ -44,6 +45,7 @@ const copy = {
     guide: [["Choose", "Pick a white product image or detail-page output."], ["Add", "Drop product images and edit individual items if needed."], ["Review", "Check dimensions and visual quality, then download."]],
     disclaimer: "These presets are general starting points. Check your marketplace's current image requirements before publishing.",
     source: "Project source",
+    thirdParty: "Third-party licenses",
     start: "Prepare product images",
   },
 };
@@ -131,7 +133,7 @@ const Home = observer(() => {
         <section className={style.finalCta}><h2>{text.start}</h2><button type="button" className="button buttonAccent buttonLarge" onClick={scrollToTool}>{text.start}<ArrowRight size={18} /></button></section>
       </main>
 
-      <footer className={style.footer}><Logo title={text.brand} /><p>{lang === "zh-CN" ? "基于 Pic Smaller 开源项目二次开发。" : "Built on the open-source Pic Smaller project."}</p><div><a href="https://github.com/QKJIN/commerce-image-studio" target="_blank" rel="noreferrer"><Code2 size={16} />{text.source}</a><a href="https://github.com/joye61/pic-smaller" target="_blank" rel="noreferrer">Pic Smaller</a><a href="https://github.com/QKJIN/commerce-image-studio/blob/main/LICENSE" target="_blank" rel="noreferrer">MIT License</a></div></footer>
+      <footer className={style.footer}><Logo title={text.brand} /><p>{lang === "zh-CN" ? "基于 Pic Smaller 开源项目二次开发。" : "Built on the open-source Pic Smaller project."}</p><div><a href="https://github.com/QKJIN/commerce-image-studio" target="_blank" rel="noreferrer"><Code2 size={16} />{text.source}</a><a href="https://github.com/joye61/pic-smaller" target="_blank" rel="noreferrer">Pic Smaller</a><a href="https://github.com/QKJIN/commerce-image-studio/blob/main/LICENSE" target="_blank" rel="noreferrer">MIT License</a><a href="https://github.com/QKJIN/commerce-image-studio/blob/main/THIRD_PARTY_NOTICES.md" target="_blank" rel="noreferrer">{text.thirdParty}</a></div></footer>
       {homeState.compareId !== null && <Compare />}
     </div>
   );

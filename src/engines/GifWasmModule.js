@@ -1,3 +1,6 @@
+// GIF wrapper based on gifsicle-wasm-browser (MIT); the accompanying
+// gif.wasm contains Gifsicle (GPL-2.0-only or its source-available alternative).
+// Attribution and terms: THIRD_PARTY_NOTICES.md.
 const gifWasmBinaryFile = "/wasm/gif.wasm";
 
 export const gifsicle = (function () {
