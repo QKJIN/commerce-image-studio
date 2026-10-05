@@ -1,13 +1,26 @@
-// Cookieless Umami analytics. Enabled only when both build-time variables
-// are set, so forks and local builds send nothing.
-const scriptUrl = process.env.NEXT_PUBLIC_UMAMI_SCRIPT_URL;
-const websiteId = process.env.NEXT_PUBLIC_UMAMI_WEBSITE_ID;
+"use client";
 
-export const analyticsEnabled = Boolean(scriptUrl && websiteId);
+import { useEffect, useState } from "react";
+
+// Cookieless Umami analytics. The server decides at runtime whether it is
+// enabled, from the UMAMI_SCRIPT_URL and UMAMI_WEBSITE_ID environment
+// variables (src/app/analytics.js/route.runtime.ts).
+const analyticsRoute = process.env.ANALYTICS_ROUTE;
 
 export function AnalyticsScript() {
-  if (!analyticsEnabled) return null;
-  return <script defer src={scriptUrl} data-website-id={websiteId} />;
+  if (!analyticsRoute) return null;
+  return <script defer src={analyticsRoute} />;
+}
+
+export function useAnalyticsEnabled() {
+  const [enabled, setEnabled] = useState(false);
+  useEffect(() => {
+    const update = () => setEnabled(window.__analyticsEnabled === true);
+    update();
+    window.addEventListener("analytics-enabled", update);
+    return () => window.removeEventListener("analytics-enabled", update);
+  }, []);
+  return enabled;
 }
 
 type EventData = Record<string, string | number>;

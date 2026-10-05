@@ -14,7 +14,7 @@ import { LeftContent } from "./LeftContent";
 import { RightOption } from "./RightOption";
 import { Select } from "@/components/Select";
 import { activeCommercePreset, commercePresets, createCommercePreset } from "@/commerce-presets";
-import { analyticsEnabled, trackEvent } from "@/analytics";
+import { trackEvent, useAnalyticsEnabled } from "@/analytics";
 
 const copy = {
   zh: {
@@ -57,6 +57,7 @@ const Home = observer(() => {
   const [menuOpen, setMenuOpen] = useState(false);
   const text = lang === "zh-CN" ? copy.zh : copy.en;
   const selected = activeCommercePreset(homeState.tempOption);
+  const analyticsEnabled = useAnalyticsEnabled();
   const busy = homeState.hasTaskRunning();
 
   useEffect(() => {

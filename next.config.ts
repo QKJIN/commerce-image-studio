@@ -6,6 +6,8 @@ const isPagesBuild =
 
 const nextConfig: NextConfig = {
   output: isPagesBuild ? "export" : "standalone",
+  pageExtensions: isPagesBuild ? ["tsx", "ts", "jsx", "js"] : ["runtime.ts", "tsx", "ts", "jsx", "js"],
+  env: { ANALYTICS_ROUTE: isPagesBuild ? "" : "/analytics.js" },
   experimental: {
     globalNotFound: true,
   },

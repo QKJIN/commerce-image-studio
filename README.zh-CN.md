@@ -37,9 +37,9 @@ npm run dev
 
 正式对外开放前，在 GitHub 仓库 **Settings → Secrets and variables → Actions → Variables** 中创建 `SITE_URL`，值为完整站点网址（例如 `https://images.example.com`），然后在 Actions 中重新运行 **Check and publish image**，并在 Coolify 重新部署。未设置 `SITE_URL` 的构建会阻止搜索引擎收录。Coolify 的域名设置不会替代此构建参数。
 
-如需用自建的 [Umami](https://umami.is/) 统计访问量，再添加两个 Actions 变量：`UMAMI_SCRIPT_URL`（例如 `https://stats.example.com/script.js`）和 `UMAMI_WEBSITE_ID`。设置后，网站会加载不使用 Cookie 的 Umami 脚本，记录 `images-added`、`preset-selected`、`download-single`、`download-zip`、`background-removed` 和 `background-failed` 事件（只有次数和方案名称，不含文件名或图片内容），并在隐私说明中注明。未设置时不加载任何统计代码。
+访问统计是可选功能。如需用自建的 [Umami](https://umami.is/) 统计访问量，请给运行中的容器设置两个环境变量（Coolify 中在 **Environment Variables** 设置后重新部署）：`UMAMI_SCRIPT_URL`（例如 `https://stats.example.com/script.js`）和 `UMAMI_WEBSITE_ID`，无需重新构建镜像。设置后，网站会加载不使用 Cookie 的 Umami 脚本，记录 `images-added`、`preset-selected`、`download-single`、`download-zip`、`background-removed` 和 `background-failed` 事件（只有次数和方案名称，不含文件名或图片内容），并在隐私说明中注明。未设置时不加载任何统计。静态导出不支持访问统计。
 
-公开镜像 `ghcr.io/qkjin/commerce-image-studio` 是 [slimtyx.com](https://slimtyx.com) 使用的构建，包含该站点的 `SITE_URL` 和 Umami 设置。如需搭建自己的站点，请 fork 本仓库并设置自己的变量，或自行构建镜像。
+公开镜像 `ghcr.io/qkjin/commerce-image-studio` 是 [slimtyx.com](https://slimtyx.com) 使用的构建，包含该站点的 `SITE_URL`。如需搭建自己的站点，请 fork 本仓库并设置自己的 `SITE_URL`，或自行构建镜像。
 
 镜像同时构建 `linux/amd64` 和 `linux/arm64` 两种架构，x86 和 ARM VPS 都能使用，Docker 会自动拉取匹配的版本。部署后请实际打开域名，测试上传、编辑、去背景、下载，并检查容器资源占用。
 
