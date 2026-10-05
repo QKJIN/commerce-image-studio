@@ -39,6 +39,8 @@ npm run dev
 
 如需用自建的 [Umami](https://umami.is/) 统计访问量，再添加两个 Actions 变量：`UMAMI_SCRIPT_URL`（例如 `https://stats.example.com/script.js`）和 `UMAMI_WEBSITE_ID`。设置后，网站会加载不使用 Cookie 的 Umami 脚本，记录 `images-added`、`preset-selected`、`download-single`、`download-zip`、`background-removed` 和 `background-failed` 事件（只有次数和方案名称，不含文件名或图片内容），并在隐私说明中注明。未设置时不加载任何统计代码。
 
+公开镜像 `ghcr.io/qkjin/commerce-image-studio` 是 [slimtyx.com](https://slimtyx.com) 使用的构建，包含该站点的 `SITE_URL` 和 Umami 设置。如需搭建自己的站点，请 fork 本仓库并设置自己的变量，或自行构建镜像。
+
 镜像同时构建 `linux/amd64` 和 `linux/arm64` 两种架构，x86 和 ARM VPS 都能使用，Docker 会自动拉取匹配的版本。部署后请实际打开域名，测试上传、编辑、去背景、下载，并检查容器资源占用。
 
 ### 不使用 Coolify

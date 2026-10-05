@@ -39,6 +39,8 @@ Before opening the site to the public, create a `SITE_URL` variable under the Gi
 
 To count visits with a self-hosted [Umami](https://umami.is/), add two more Actions variables: `UMAMI_SCRIPT_URL` (for example `https://stats.example.com/script.js`) and `UMAMI_WEBSITE_ID`. The site then loads the cookie-free Umami script, records the events `images-added`, `preset-selected`, `download-single`, `download-zip`, `background-removed` and `background-failed` (counts and preset names only, never file names or image content), and mentions the statistics in its privacy section. Without these variables no analytics code is loaded.
 
+The published image `ghcr.io/qkjin/commerce-image-studio` is the build for [slimtyx.com](https://slimtyx.com): it contains that site's `SITE_URL` and Umami settings. To run your own site, fork the repository and set your own variables, or build the image yourself.
+
 The image is built for both `linux/amd64` and `linux/arm64`, so it runs on x86 and ARM VPS hosts; Docker pulls the matching one automatically. After deploying, open the domain and test uploading, editing, background removal and downloading, and check the container's resource usage.
 
 ### Without Coolify
