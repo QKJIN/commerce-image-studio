@@ -4,6 +4,8 @@ import {
   siteUrl,
   supportedLocales,
 } from "@/locale-config";
+import { guides } from "@/guides";
+import { getGuidePath } from "@/seo";
 
 export const dynamic = "force-static";
 
@@ -19,10 +21,17 @@ const languages = siteUrl ? Object.fromEntries(
 
 export default function sitemap(): MetadataRoute.Sitemap {
   if (!siteUrl) return [];
-  return supportedLocales.map((locale) => ({
-    url: `${siteUrl}${getLocalePath(locale)}`,
-    changeFrequency: "monthly",
-    priority: locale === "en-US" || locale === "zh-CN" ? 1 : 0.8,
-    alternates: { languages },
-  }));
+  return [
+    ...supportedLocales.map((locale) => ({
+      url: `${siteUrl}${getLocalePath(locale)}`,
+      changeFrequency: "monthly" as const,
+      priority: 1,
+      alternates: { languages },
+    })),
+    ...guides.map((guide) => ({
+      url: `${siteUrl}${getGuidePath(guide)}`,
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+    })),
+  ];
 }

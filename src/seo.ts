@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import type { LocaleData } from "./type";
+import type { Guide } from "./guides";
 import {
   getLocalePath,
   siteUrl,
@@ -85,5 +86,61 @@ export function createStructuredData(
     });
   }
   // Escape "<" so the JSON cannot close the surrounding script element.
+  return JSON.stringify({ "@context": "https://schema.org", "@graph": graph }).replace(/</g, "\\u003c");
+}
+
+export function getGuidePath(guide: Guide) {
+  return `${getLocalePath("en-US")}${guide.slug}/`;
+}
+
+export function createGuideMetadata(guide: Guide): Metadata {
+  const path = getGuidePath(guide);
+  return {
+    metadataBase,
+    title: guide.title,
+    description: guide.description,
+    alternates: siteUrl ? { canonical: path } : undefined,
+    robots: siteUrl ? undefined : { index: false, follow: false },
+    openGraph: {
+      type: "article",
+      url: siteUrl ? path : undefined,
+      title: guide.title,
+      description: guide.description,
+      siteName: "Commerce Image Studio",
+      locale: "en_US",
+      images: [{ url: "/og-image.png", width: 1200, height: 630, alt: "Commerce Image Studio" }],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: guide.title,
+      description: guide.description,
+      images: ["/og-image.png"],
+    },
+    icons: { icon: "/icon.svg" },
+    other: { google: "notranslate" },
+  };
+}
+
+export function createGuideStructuredData(guide: Guide) {
+  const home = siteUrl ? `${siteUrl}${getLocalePath("en-US")}` : undefined;
+  const url = siteUrl ? `${siteUrl}${getGuidePath(guide)}` : undefined;
+  const graph = [
+    {
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Home", item: home },
+        { "@type": "ListItem", position: 2, name: guide.navLabel, item: url },
+      ],
+    },
+    {
+      "@type": "FAQPage",
+      url,
+      mainEntity: guide.faq.map((item) => ({
+        "@type": "Question",
+        name: item.question,
+        acceptedAnswer: { "@type": "Answer", text: item.answer },
+      })),
+    },
+  ];
   return JSON.stringify({ "@context": "https://schema.org", "@graph": graph }).replace(/</g, "\\u003c");
 }

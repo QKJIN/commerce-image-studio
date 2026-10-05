@@ -1,0 +1,33 @@
+.guide { padding: 80px 24px; background: var(--color-surface); border-top: 1px solid var(--color-border); }
+.section { width: min(820px, 100%); margin: 0 auto 56px; &:last-child { margin-bottom: 0; }
+  h2 { margin: 0 0 16px; color: var(--color-primary); font-family: "Libre Bodoni", Georgia, serif; font-size: clamp(28px, 3vw, 38px); line-height: 1.15; letter-spacing: 0; }
+  a { color: var(--color-secondary); font-weight: 600; }
+}
+.note { margin: 0 0 18px; color: var(--color-text-muted); font-size: 14px; line-height: 1.6; }
+.table { width: 100%; border-collapse: collapse; border-top: 1px solid var(--color-border);
+  th, td { padding: 14px 12px; border-bottom: 1px solid var(--color-border); text-align: left; vertical-align: top; line-height: 1.6; }
+  th { width: 30%; color: var(--color-primary); font-weight: 700; }
+  td { color: var(--color-foreground); }
+}
+.list { margin: 0 0 32px; padding-left: 22px; color: var(--color-foreground); line-height: 1.7; li + li { margin-top: 8px; } }
+.steps { margin: 0; padding: 0; list-style: none; counter-reset: step;
+  li { position: relative; padding: 0 0 22px 56px; counter-increment: step; }
+  li::before { content: counter(step); position: absolute; left: 0; top: 0; width: 38px; height: 38px; display: grid; place-items: center; border: 1px solid #a9b9cf; border-radius: 50%; color: var(--color-secondary); font-weight: 700; }
+  h3 { margin: 6px 0 6px; color: var(--color-primary); font-size: 17px; }
+  p { margin: 0; color: var(--color-text-muted); line-height: 1.65; }
+}
+.mistakes { margin: 0; display: grid; gap: 14px;
+  > div { padding: 16px 18px; border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface-subtle); }
+  dt { margin-bottom: 6px; color: var(--color-primary); font-weight: 700; }
+  dd { margin: 0; color: var(--color-text-muted); line-height: 1.65; }
+}
+.faq { border-top: 1px solid var(--color-border);
+  details { border-bottom: 1px solid var(--color-border); }
+  summary { padding: 18px 4px; cursor: pointer; color: var(--color-primary); font-size: 17px; font-weight: 700; }
+  summary:focus-visible { outline: 2px solid var(--color-ring); outline-offset: 2px; }
+  p { margin: 0 4px 18px; color: var(--color-text-muted); line-height: 1.7; }
+}
+@media (max-width: 680px) {
+  .guide { padding: 56px 16px; }
+  .table th { width: 38%; }
+}

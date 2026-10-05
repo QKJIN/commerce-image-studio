@@ -16,6 +16,8 @@ import { Select } from "@/components/Select";
 import { activeCommercePreset, commercePresets, createCommercePreset } from "@/commerce-presets";
 import { trackEvent, useAnalyticsEnabled } from "@/analytics";
 import { englishFaq, faqCheckedDate } from "@/seo-content";
+import { guides } from "@/guides";
+import type { Landing } from "@/ClientApp";
 
 const copy = {
   zh: {
@@ -54,7 +56,7 @@ const copy = {
   },
 };
 
-const Home = observer(() => {
+const Home = observer(({ landing }: { landing?: Landing }) => {
   useWorkerHandler();
   const { lang } = useAppLocale();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -106,9 +108,10 @@ const Home = observer(() => {
       <main id="top">
         <section className={style.hero}>
           <div className={style.heroCopy}>
+            {landing && <nav className={style.breadcrumb} aria-label="Breadcrumb"><a href={`/${lang}/`}>Home</a><span aria-hidden="true">/</span><span>{landing.breadcrumb}</span></nav>}
             <span className={style.eyebrow}><ShieldCheck size={16} />{text.eyebrow}</span>
-            <h1>{text.heading}</h1>
-            <p>{text.summary}</p>
+            <h1>{landing?.heading ?? text.heading}</h1>
+            <p>{landing?.summary ?? text.summary}</p>
           </div>
           <div className={style.workspace} id="workspace">
             <div className={style.workspaceTop}>
@@ -127,6 +130,7 @@ const Home = observer(() => {
           <div className={style.heroDetails}><p>{text.intro}</p><span className={style.presetDisclaimer}>{text.disclaimer}</span></div>
         </section>
 
+        {landing ? landing.content : <>
         <section className={style.how}>
           <div className={style.sectionHeading}><h2>{text.guideTitle}</h2></div>
           <ol>{text.guide.map((step, index) => <li key={step[0]}><b>{index + 1}</b><div><h3>{step[0]}</h3><p>{step[1]}</p></div></li>)}</ol>
@@ -141,13 +145,15 @@ const Home = observer(() => {
           <section className={style.faq} id="faq">
             <div className={style.sectionHeading}><h2>Product image size FAQ</h2><p>Marketplace image rules, checked against each platform&apos;s help pages in {faqCheckedDate}. Rules change, so confirm the current requirements before publishing.</p></div>
             <div className={style.faqList}>{englishFaq.map((item) => <details key={item.question}><summary>{item.question}</summary><p>{item.answer}</p></details>)}</div>
+            <div className={style.guideLinks}><strong>Platform guides</strong>{guides.map((guide) => <a key={guide.slug} href={`/en-US/${guide.slug}/`}>{guide.navLabel}</a>)}</div>
           </section>
         )}
+        </>}
 
         <section className={style.finalCta}><h2>{text.start}</h2><button type="button" className="button buttonAccent buttonLarge" onClick={scrollToTool}>{text.start}<ArrowRight size={18} /></button></section>
       </main>
 
-      <footer className={style.footer}><Logo title={text.brand} /><p>{lang === "zh-CN" ? "基于 Pic Smaller 开源项目二次开发。" : "Built on the open-source Pic Smaller project."}</p><div><a href="https://github.com/QKJIN/commerce-image-studio" target="_blank" rel="noreferrer"><Code2 size={16} />{text.source}</a><a href="https://github.com/joye61/pic-smaller" target="_blank" rel="noreferrer">Pic Smaller</a><a href="https://github.com/QKJIN/commerce-image-studio/blob/main/LICENSE" target="_blank" rel="noreferrer">MIT License</a><a href="https://github.com/QKJIN/commerce-image-studio/blob/main/THIRD_PARTY_NOTICES.md" target="_blank" rel="noreferrer">{text.thirdParty}</a></div></footer>
+      <footer className={style.footer}><Logo title={text.brand} /><p>{lang === "zh-CN" ? "基于 Pic Smaller 开源项目二次开发。" : "Built on the open-source Pic Smaller project."}</p><div><a href="https://github.com/QKJIN/commerce-image-studio" target="_blank" rel="noreferrer"><Code2 size={16} />{text.source}</a><a href="https://github.com/joye61/pic-smaller" target="_blank" rel="noreferrer">Pic Smaller</a><a href="https://github.com/QKJIN/commerce-image-studio/blob/main/LICENSE" target="_blank" rel="noreferrer">MIT License</a><a href="https://github.com/QKJIN/commerce-image-studio/blob/main/THIRD_PARTY_NOTICES.md" target="_blank" rel="noreferrer">{text.thirdParty}</a></div>{lang !== "zh-CN" && <nav className={style.footerGuides} aria-label="Guides">{guides.map((guide) => <a key={guide.slug} href={`/en-US/${guide.slug}/`}>{guide.navLabel}</a>)}</nav>}</footer>
       {homeState.compareId !== null && <Compare />}
     </div>
   );

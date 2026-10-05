@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, type ReactNode } from "react";
 import { configure } from "mobx";
 import { observer } from "mobx-react-lite";
 import { gstate } from "./global";
@@ -10,13 +10,24 @@ import type { SupportedLocale } from "./locale-config";
 import type { LocaleData } from "./type";
 import { homeState } from "./states/home";
 import { LocaleContext } from "./locale-context";
+import { createCommercePreset, type CommercePresetId } from "./commerce-presets";
+
+export type Landing = {
+  heading: string;
+  summary: string;
+  presetId: CommercePresetId;
+  breadcrumb: string;
+  content: ReactNode;
+};
 
 type ClientAppProps = {
   lang: SupportedLocale;
   locale: LocaleData;
+  landing?: Landing;
 };
 
-export default function ClientApp({ lang, locale }: ClientAppProps) {
+export default function ClientApp({ lang, locale, landing }: ClientAppProps) {
+  const landingPreset = landing?.presetId;
   useEffect(() => {
     configure({
       enforceActions: "never",
@@ -25,12 +36,19 @@ export default function ClientApp({ lang, locale }: ClientAppProps) {
 
     document.documentElement.lang = lang;
     window.localStorage.setItem("commerce-image-studio-locale", lang);
-    homeState.restorePersistedOption();
-  }, [lang]);
+    if (landingPreset) {
+      // Landing pages open with their own preset instead of saved settings.
+      const option = createCommercePreset(landingPreset);
+      homeState.option = option;
+      homeState.tempOption = structuredClone(option);
+    } else {
+      homeState.restorePersistedOption();
+    }
+  }, [lang, landingPreset]);
 
   return (
     <LocaleContext.Provider value={{ lang, locale }}>
-      <Home />
+      <Home landing={landing} />
       <GlobalLoading />
     </LocaleContext.Provider>
   );
