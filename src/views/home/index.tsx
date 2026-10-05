@@ -15,10 +15,12 @@ import { RightOption } from "./RightOption";
 import { Select } from "@/components/Select";
 import { activeCommercePreset, commercePresets, createCommercePreset } from "@/commerce-presets";
 import { trackEvent, useAnalyticsEnabled } from "@/analytics";
+import { englishFaq, faqCheckedDate } from "@/seo-content";
 
 const copy = {
   zh: {
     brand: "商图工坊",
+    heading: "商图工坊",
     eyebrow: "为电商卖家准备的图片工具",
     summary: "批量统一商品图尺寸、背景和格式，处理好再上传。",
     intro: "选一个常用方案，加入图片，检查结果后逐张下载或打包保存。图片在你的浏览器中处理。",
@@ -35,15 +37,16 @@ const copy = {
   },
   en: {
     brand: "Commerce Image Studio",
-    eyebrow: "Image preparation for online sellers",
-    summary: "Make product images consistent in size, background, and format before upload.",
-    intro: "Choose a practical preset, add images, review the output, then download individually or as a ZIP. Processing stays in your browser.",
+    heading: "Product Photo Resizer & White Background Maker",
+    eyebrow: "Free image tool for online sellers",
+    summary: "Turn product photos into square, white-background images for Amazon, Shopify, eBay and Etsy. Resize, remove backgrounds and compress in batches, right in your browser.",
+    intro: "Choose a preset, add product photos, review the output, then download individually or as a ZIP. Nothing is uploaded and there is no sign-up.",
     presets: "Choose an output",
     custom: "Custom settings",
     privacyTitle: "Your product images stay on your device",
     privacyText: "Processing happens in your browser. Your originals are not uploaded to our server. Review each image's size, color, and detail before publishing.",
-    guideTitle: "One batch, three steps",
-    guide: [["Choose", "Pick a white product image or detail-page output."], ["Add", "Drop product images and edit individual items if needed."], ["Review", "Check dimensions and visual quality, then download."]],
+    guideTitle: "How to make white background product photos",
+    guide: [["Choose a preset", "Pick a square white product image or a lighter detail-page image."], ["Add product photos", "Drop in a batch, then crop, rotate or remove the background where needed."], ["Review and download", "Check size and quality, then download each image or a ZIP."]],
     disclaimer: "These presets are general starting points. Check your marketplace's current image requirements before publishing.",
     source: "Project source",
     thirdParty: "Third-party licenses",
@@ -90,6 +93,7 @@ const Home = observer(() => {
         <div className={style.headerTools}>
           <nav className={menuOpen ? style.navOpen : ""} aria-label="Primary navigation">
             <a href="#workspace">{text.start}</a>
+            {lang !== "zh-CN" && <a href="#faq">FAQ</a>}
             <a href="#privacy">{lang === "zh-CN" ? "隐私" : "Privacy"}</a>
           </nav>
           <div className={style.headerActions}>
@@ -103,7 +107,7 @@ const Home = observer(() => {
         <section className={style.hero}>
           <div className={style.heroCopy}>
             <span className={style.eyebrow}><ShieldCheck size={16} />{text.eyebrow}</span>
-            <h1>{text.brand}</h1>
+            <h1>{text.heading}</h1>
             <p>{text.summary}</p>
           </div>
           <div className={style.workspace} id="workspace">
@@ -132,6 +136,13 @@ const Home = observer(() => {
           <div><span className={style.eyebrow}><ShieldCheck size={16} />{lang === "zh-CN" ? "本地处理" : "LOCAL PROCESSING"}</span><h2>{text.privacyTitle}</h2><p>{text.privacyText}</p>{analyticsEnabled && <p>{lang === "zh-CN" ? "我们使用不设 Cookie 的匿名统计，只记录访问量和功能使用次数，不记录文件名或图片内容。" : "We use anonymous, cookie-free statistics that count visits and feature use. File names and image content are never recorded."}</p>}<ul><li><Check size={16} />{lang === "zh-CN" ? "无需注册" : "No sign-up"}</li><li><Check size={16} />{lang === "zh-CN" ? "批量处理" : "Batch processing"}</li></ul></div>
           <div className={style.privacyVisual}><ShieldCheck size={48} /><strong>{lang === "zh-CN" ? "原图不上传" : "No image uploads"}</strong></div>
         </section>
+
+        {lang !== "zh-CN" && (
+          <section className={style.faq} id="faq">
+            <div className={style.sectionHeading}><h2>Product image size FAQ</h2><p>Marketplace image rules, checked against each platform&apos;s help pages in {faqCheckedDate}. Rules change, so confirm the current requirements before publishing.</p></div>
+            <div className={style.faqList}>{englishFaq.map((item) => <details key={item.question}><summary>{item.question}</summary><p>{item.answer}</p></details>)}</div>
+          </section>
+        )}
 
         <section className={style.finalCta}><h2>{text.start}</h2><button type="button" className="button buttonAccent buttonLarge" onClick={scrollToTool}>{text.start}<ArrowRight size={18} /></button></section>
       </main>

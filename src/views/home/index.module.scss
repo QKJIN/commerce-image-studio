@@ -2,7 +2,7 @@
 .header { position: sticky; top: 0; z-index: 40; height: 72px; padding: 0 max(24px, calc((100vw - 1180px) / 2)); display: flex; align-items: center; justify-content: space-between; gap: 28px; background: color-mix(in srgb, var(--color-surface) 94%, transparent); border-bottom: 1px solid var(--color-border); backdrop-filter: blur(14px); }
 .brand { text-decoration: none; }
 .headerTools { margin-left: auto; display: flex; align-items: center; gap: 18px; }
-.header nav { display: flex; align-items: center; a { color: var(--color-text-muted); text-decoration: none; font-size: 14px; font-weight: 600; transition: color .2s ease; } a:hover { color: var(--color-secondary); } }
+.header nav { display: flex; align-items: center; gap: 24px; a { color: var(--color-text-muted); text-decoration: none; font-size: 14px; font-weight: 600; transition: color .2s ease; } a:hover { color: var(--color-secondary); } }
 .desktopNav { position: relative; min-height: 42px; padding: 0 10px 0 2px; display: inline-flex; align-items: center; gap: 10px; color: var(--color-primary) !important; transition: color .2s ease !important; > span:not(.desktopIcon) { line-height: 1; } b { position: absolute; top: -2px; right: -11px; padding: 3px 5px; color: #fff; border-radius: 3px; background: #e54836; font-size: 8px; line-height: 1; letter-spacing: .08em; } &:hover { color: var(--color-secondary) !important; } }
 .desktopIcon { display: grid; flex: none; place-items: center; color: var(--color-secondary); }
 .headerActions { display: flex; align-items: center; gap: 4px; padding-left: 18px; border-left: 1px solid var(--color-border); }
@@ -125,6 +125,8 @@
 .privacy { padding: 96px max(24px, calc((100vw - 1180px) / 2)); display: grid; grid-template-columns: 1fr 420px; align-items: center; gap: 80px; background: var(--color-primary); color: #fff; h2 { margin: 18px 0; font-family: "Libre Bodoni", Georgia, serif; font-size: clamp(36px, 4vw, 54px); line-height: 1.08; letter-spacing: 0; } p { color: #c8d5e5; line-height: 1.75; font-size: 17px; } ul { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0; list-style: none; li { display: flex; align-items: center; gap: 8px; color: #e8eef6; } svg { color: #e7bd59; } }
 }
 .privacyVisual { min-height: 280px; display: grid; place-items: center; align-content: center; gap: 16px; border: 1px solid #69809e; border-radius: var(--radius-lg); background-image: radial-gradient(#6e85a3 1px, transparent 1px); background-size: 18px 18px; svg { color: #e7bd59; } strong { font-family: "Libre Bodoni", serif; font-size: 30px; letter-spacing: 0; } span { color: #b9c8db; font-size: 12px; } }
+.faq { padding: 96px 24px; background: var(--color-surface); border-top: 1px solid var(--color-border); }
+.faqList { width: min(820px, 100%); margin: 0 auto; border-top: 1px solid var(--color-border); details { border-bottom: 1px solid var(--color-border); } summary { padding: 20px 4px; cursor: pointer; color: var(--color-primary); font-size: 17px; font-weight: 700; } summary:focus-visible { outline: 2px solid var(--color-ring); outline-offset: 2px; } p { margin: 0 4px 20px; color: var(--color-text-muted); line-height: 1.7; } }
 .finalCta { padding: 100px 24px; text-align: center; background: var(--color-surface-subtle); h2 { margin: 0; color: var(--color-primary); font-family: "Libre Bodoni", serif; font-size: clamp(36px, 4vw, 52px); letter-spacing: 0; } p { color: var(--color-text-muted); margin: 14px 0 28px; } }
 .footer { min-height: 150px; padding: 36px max(24px, calc((100vw - 1180px) / 2)); display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 40px; border-top: 1px solid var(--color-border); background: var(--color-surface); p { color: var(--color-text-muted); } div { display: flex; gap: 20px; align-items: center; font-size: 13px; } a { color: var(--color-primary); text-decoration: none; font-weight: 600; } span { color: var(--color-text-muted); } }
 
@@ -159,7 +161,7 @@
   .workspaceTop { height: 50px; }
   .workbench { height: 430px; }
   .heroDetails { grid-template-columns: 1fr; gap: 16px; > p { grid-column: auto; } > a { width: fit-content; } }
-  .features, .how, .desktopSection { padding: 72px 16px; }
+  .features, .how, .faq, .desktopSection { padding: 72px 16px; }
   .sectionHeading { text-align: left; }
   .featureGrid { grid-template-columns: 1fr; }
   .desktopCopy ul { grid-template-columns: 1fr; }

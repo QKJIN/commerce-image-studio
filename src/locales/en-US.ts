@@ -3,9 +3,9 @@ import { LocaleData } from "@/type";
 const localeData: LocaleData = {
   logo: "Commerce Image Studio",
   siteTitle:
-    "Commerce Image Studio - Prepare product images in batches",
+    "Free Product Photo Resizer & White Background Maker",
   siteDescription:
-    "Create white square product images and lighter product detail images in batches. Process your images locally in your browser.",
+    "Make square, white-background product photos for Amazon, Shopify, eBay and Etsy. Batch resize, remove backgrounds and compress in your browser. Free.",
   initial: "Initializing",
   previewHelp:
     "Drag the dividing line to compare the compression effect: the left is the original image, the right is the compressed image",
