@@ -37,7 +37,7 @@ npm run dev
 
 正式对外开放前，在 GitHub 仓库 **Settings → Secrets and variables → Actions → Variables** 中创建 `SITE_URL`，值为完整站点网址（例如 `https://images.example.com`），然后在 Actions 中重新运行 **Check and publish image**，并在 Coolify 重新部署。未设置 `SITE_URL` 的构建会阻止搜索引擎收录。Coolify 的域名设置不会替代此构建参数。
 
-镜像目前构建为 `linux/amd64`，适用于常见的 x86 VPS；ARM VPS 需改为对应架构后重新构建。部署后请实际打开域名，测试上传、编辑、去背景、下载，并检查容器资源占用。
+镜像同时构建 `linux/amd64` 和 `linux/arm64` 两种架构，x86 和 ARM VPS 都能使用，Docker 会自动拉取匹配的版本。部署后请实际打开域名，测试上传、编辑、去背景、下载，并检查容器资源占用。
 
 ### 不使用 Coolify
 

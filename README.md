@@ -37,7 +37,7 @@ In Coolify, under **Configuration → Resource Limits**, set **Number of CPUs** 
 
 Before opening the site to the public, create a `SITE_URL` variable under the GitHub repository's **Settings → Secrets and variables → Actions → Variables**, with the full site URL as its value (for example `https://images.example.com`). Then re-run **Check and publish image** in Actions and redeploy in Coolify. Builds without `SITE_URL` block search engine indexing. Coolify's domain setting does not replace this build argument.
 
-The image is currently built for `linux/amd64`, which suits common x86 VPS hosts. For an ARM VPS, change the target architecture and rebuild. After deploying, open the domain and test uploading, editing, background removal and downloading, and check the container's resource usage.
+The image is built for both `linux/amd64` and `linux/arm64`, so it runs on x86 and ARM VPS hosts; Docker pulls the matching one automatically. After deploying, open the domain and test uploading, editing, background removal and downloading, and check the container's resource usage.
 
 ### Without Coolify
 
