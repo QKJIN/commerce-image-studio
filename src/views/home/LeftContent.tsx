@@ -30,6 +30,7 @@ import {
 import { createImageList } from "@/engines/transform";
 import { ERROR_ANIMATED_UNSUPPORTED } from "@/engines/animation";
 import { CompressionRate } from "@/components/CompressionRate";
+import { trackEvent } from "@/analytics";
 
 const ImageEditor = dynamic(() => import("./ImageEditor"), { ssr: false });
 
@@ -98,7 +99,7 @@ const ResultItem = observer(({ item, disabled, onPreviewUnavailable, onEdit }: {
       <div className={style.itemActions}>
         {editable && <IconButton label={zh ? "编辑图片" : "Edit image"} disabled={disabled} onClick={onEdit}><Pencil size={18} /></IconButton>}
         {item.originalBlob && <IconButton label={zh ? "恢复原图" : "Restore original"} disabled={disabled} onClick={() => homeState.applyEdit(item.key, null)}><Undo2 size={18} /></IconButton>}
-        <a className={`${style.iconButton} ${disabled || !item.compress ? style.disabledLink : ""}`} aria-label={locale.listAction.downloadOne ?? "Download"} title={locale.listAction.downloadOne} aria-disabled={disabled || !item.compress} href={!disabled ? item.compress?.src : undefined} download={item.compress ? getOutputFileName(item, homeState.option) : undefined}><Download size={18} /></a>
+        <a className={`${style.iconButton} ${disabled || !item.compress ? style.disabledLink : ""}`} aria-label={locale.listAction.downloadOne ?? "Download"} title={locale.listAction.downloadOne} aria-disabled={disabled || !item.compress} href={!disabled ? item.compress?.src : undefined} download={item.compress ? getOutputFileName(item, homeState.option) : undefined} onClick={() => { if (!disabled && item.compress) trackEvent("download-single"); }}><Download size={18} /></a>
         <IconButton label={locale.listAction.removeOne ?? "Remove"} danger disabled={disabled} onClick={() => homeState.remove(item.key)}><Trash2 size={18} /></IconButton>
       </div>
       {item.processError && (() => {
@@ -181,6 +182,7 @@ export const LeftContent = observer(() => {
         if (info.compress?.blob) zip.file(uniqueName, info.compress.blob);
       }
       createDownload("commerce-product-images.zip", await zip.generateAsync({ type: "blob", compression: "DEFLATE", compressionOptions: { level: 6 } }));
+      trackEvent("download-zip", { count: homeState.list.size });
     } finally {
       gstate.loading = false;
     }

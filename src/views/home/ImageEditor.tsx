@@ -7,6 +7,7 @@ import { isAnimatedImage } from "@/engines/animation";
 import { useAppLocale } from "@/locale-context";
 import type { ImageItem } from "@/states/home";
 import style from "./ImageEditor.module.scss";
+import { trackEvent } from "@/analytics";
 
 type Box = { x: number; y: number; width: number; height: number };
 
@@ -138,8 +139,10 @@ export default function ImageEditor({ item, onClose, onApply }: { item: ImageIte
         worker.postMessage({ id: Date.now(), blob: working });
       });
       commit(result);
+      trackEvent("background-removed");
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : String(cause));
+      trackEvent("background-failed");
     } finally {
       setBusy(false);
     }

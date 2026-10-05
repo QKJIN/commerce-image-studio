@@ -1,5 +1,6 @@
 import type { Viewport } from "next";
 import "@/main.scss";
+import { AnalyticsScript } from "@/analytics";
 import zhCN from "@/locales/zh-CN";
 import { createLocaleMetadata } from "@/seo";
 
@@ -16,6 +17,9 @@ export default function DefaultLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="zh-CN">
+      <head>
+        <AnalyticsScript />
+      </head>
       <body>{children}</body>
     </html>
   );

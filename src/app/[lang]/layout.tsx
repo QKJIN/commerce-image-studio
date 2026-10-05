@@ -1,6 +1,7 @@
 import type { Viewport } from "next";
 import { notFound } from "next/navigation";
 import "@/main.scss";
+import { AnalyticsScript } from "@/analytics";
 import {
   isSupportedLocale,
   supportedLocales,
@@ -25,6 +26,9 @@ export default async function LocaleLayout({
 
   return (
     <html lang={lang}>
+      <head>
+        <AnalyticsScript />
+      </head>
       <body>{children}</body>
     </html>
   );

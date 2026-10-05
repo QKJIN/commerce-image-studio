@@ -50,6 +50,8 @@ jobs:
           platforms: ${{ matrix.platform }}
           build-args: |
             SITE_URL=${{ vars.SITE_URL }}
+            NEXT_PUBLIC_UMAMI_SCRIPT_URL=${{ vars.UMAMI_SCRIPT_URL }}
+            NEXT_PUBLIC_UMAMI_WEBSITE_ID=${{ vars.UMAMI_WEBSITE_ID }}
           labels: |
             org.opencontainers.image.source=https://github.com/QKJIN/commerce-image-studio
             org.opencontainers.image.licenses=MIT

@@ -5,6 +5,8 @@ import { ImageItem, homeState } from "@/states/home";
 import { CompressOption, ImageInfo } from "./ImageBase";
 import { OutputMessageData } from "./handler";
 import { normalizeCompressOption } from "@/options";
+import { activeCommercePreset } from "@/commerce-presets";
+import { trackEvent } from "@/analytics";
 
 export interface MessageData {
   info: ImageInfo;
@@ -141,6 +143,7 @@ export async function createImageList(files: Array<File>) {
   if (files.length === 0) return;
 
   const option = normalizeCompressOption(toJS(homeState.tempOption));
+  trackEvent("images-added", { count: files.length, preset: activeCommercePreset(option) ?? "custom" });
   runInAction(() => { homeState.tempOption = structuredClone(option); });
   runInAction(() => { homeState.option = option; });
   try {

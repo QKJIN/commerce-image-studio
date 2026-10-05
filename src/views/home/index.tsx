@@ -14,6 +14,7 @@ import { LeftContent } from "./LeftContent";
 import { RightOption } from "./RightOption";
 import { Select } from "@/components/Select";
 import { activeCommercePreset, commercePresets, createCommercePreset } from "@/commerce-presets";
+import { analyticsEnabled, trackEvent } from "@/analytics";
 
 const copy = {
   zh: {
@@ -73,6 +74,7 @@ const Home = observer(() => {
 
   const choosePreset = (id: (typeof commercePresets)[number]["id"]) => {
     const option = createCommercePreset(id);
+    trackEvent("preset-selected", { preset: id });
     homeState.tempOption = structuredClone(option);
     homeState.option = option;
     if (homeState.list.size > 0) homeState.reCompress();
@@ -126,7 +128,7 @@ const Home = observer(() => {
         </section>
 
         <section className={style.privacy} id="privacy">
-          <div><span className={style.eyebrow}><ShieldCheck size={16} />{lang === "zh-CN" ? "本地处理" : "LOCAL PROCESSING"}</span><h2>{text.privacyTitle}</h2><p>{text.privacyText}</p><ul><li><Check size={16} />{lang === "zh-CN" ? "无需注册" : "No sign-up"}</li><li><Check size={16} />{lang === "zh-CN" ? "批量处理" : "Batch processing"}</li></ul></div>
+          <div><span className={style.eyebrow}><ShieldCheck size={16} />{lang === "zh-CN" ? "本地处理" : "LOCAL PROCESSING"}</span><h2>{text.privacyTitle}</h2><p>{text.privacyText}</p>{analyticsEnabled && <p>{lang === "zh-CN" ? "我们使用不设 Cookie 的匿名统计，只记录访问量和功能使用次数，不记录文件名或图片内容。" : "We use anonymous, cookie-free statistics that count visits and feature use. File names and image content are never recorded."}</p>}<ul><li><Check size={16} />{lang === "zh-CN" ? "无需注册" : "No sign-up"}</li><li><Check size={16} />{lang === "zh-CN" ? "批量处理" : "Batch processing"}</li></ul></div>
           <div className={style.privacyVisual}><ShieldCheck size={48} /><strong>{lang === "zh-CN" ? "原图不上传" : "No image uploads"}</strong></div>
         </section>
 
