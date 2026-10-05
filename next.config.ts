@@ -6,6 +6,8 @@ const isPagesBuild =
 
 const nextConfig: NextConfig = {
   output: isPagesBuild ? "export" : "standalone",
+  // Locale URLs in the sitemap, canonical and hreflang tags end with "/".
+  trailingSlash: true,
   pageExtensions: isPagesBuild ? ["tsx", "ts", "jsx", "js"] : ["runtime.ts", "tsx", "ts", "jsx", "js"],
   env: { ANALYTICS_ROUTE: isPagesBuild ? "" : "/analytics.js" },
   experimental: {
